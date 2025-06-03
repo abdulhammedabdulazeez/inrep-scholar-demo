@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { useParams } from 'next/navigation';
 
 type DocumentPageProps = {
   params: {
@@ -66,7 +67,8 @@ const getDocumentById = (id: string) => {
   return documents[id as keyof typeof documents] || documents['1'];
 };
 
-export default function DocumentLandingPage({ params }: DocumentPageProps) {
+export default function DocumentLandingPage() {
+  const params = useParams();
   const document = getDocumentById(params.id);
   const [userRole] = useState<'guest' | 'user' | 'admin'>('guest');
   const [showScholarChat, setShowScholarChat] = useState(false);

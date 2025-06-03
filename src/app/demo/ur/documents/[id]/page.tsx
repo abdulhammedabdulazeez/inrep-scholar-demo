@@ -68,8 +68,8 @@ const getDocumentById = (id: string) => {
 };
 
 export default function DocumentLandingPage() {
-  const params = useParams();
-  const document = getDocumentById(params.id);
+  const { id } = useParams();
+  const document = getDocumentById(id!);
   const [userRole] = useState<'guest' | 'user' | 'admin'>('guest');
   const [showScholarChat, setShowScholarChat] = useState(false);
   const [chatMessages, setChatMessages] = useState([

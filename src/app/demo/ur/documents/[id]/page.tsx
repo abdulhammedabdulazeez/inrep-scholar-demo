@@ -69,7 +69,12 @@ const getDocumentById = (id: string) => {
 
 export default function DocumentLandingPage() {
   const { id } = useParams();
-  const document = getDocumentById(id!);
+  
+  if (!id || Array.isArray(id)) {
+    throw new Error("Invalid document ID");
+  }
+  
+  const document = getDocumentById(id);
   const [userRole] = useState<'guest' | 'user' | 'admin'>('guest');
   const [showScholarChat, setShowScholarChat] = useState(false);
   const [chatMessages, setChatMessages] = useState([

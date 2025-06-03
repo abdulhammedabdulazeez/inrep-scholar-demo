@@ -4,21 +4,41 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
 
-type DocumentPageProps = {
-  params: {
-    id: string;
-  };
+type Document = {
+  id: string;
+  title: string;
+  author: string;
+  authorEmail: string;
+  supervisor?: string; // optional
+  faculty: string;
+  department: string;
+  type: string;
+  year: string;
+  submissionDate: string;
+  doi: string;
+  accessRights: string;
+  ccLicense?: string;
+  abstract: string;
+  keywords: string[];
+  downloads: number;
+  views: number;
+  citations: number;
+  fileSize: string;
+  pages: number;
+  language: string;
+  subject: string;
+  status: string;
 };
 
 // Mock document data based on ID
-const getDocumentById = (id: string) => {
-  const documents = {
+const getDocumentById = (id: string): Document => {
+  const documents: Record<string, Document> = {
     '1': {
       id: '1',
       title: 'Machine Learning Applications in Agricultural Yield Prediction for Rwanda',
       author: 'Marie Uwimana',
       authorEmail: 'marie.uwimana@ur.ac.rw',
-      supervisor: 'Dr. Jean Mukiza',
+      supervisor: 'Dr. Jean Mukiza', // present here
       faculty: 'Engineering',
       department: 'Computer Science',
       type: 'Master\'s Thesis',
@@ -27,15 +47,15 @@ const getDocumentById = (id: string) => {
       doi: '10.12345/ur.thesis.2024.001',
       accessRights: 'open_access',
       ccLicense: 'CC BY 4.0',
-      abstract: 'This thesis explores the application of machine learning techniques to predict agricultural yields in Rwanda. Using satellite imagery, weather data, and historical crop yield information, we developed models that can accurately forecast harvest outcomes. The research demonstrates significant improvements in prediction accuracy compared to traditional methods, with potential applications for food security planning and agricultural policy development in Rwanda. Our findings show that ensemble methods combining multiple data sources achieve the highest accuracy rates, with an average prediction error of less than 12%. The study contributes to both machine learning methodology and agricultural planning in developing countries.',
-      keywords: ['Machine Learning', 'Agriculture', 'Rwanda', 'Yield Prediction', 'Satellite Imagery', 'Food Security'],
+      abstract: '...',
+      keywords: ['Machine Learning', 'Agriculture'],
       downloads: 245,
       views: 1089,
       citations: 3,
       fileSize: '2.4 MB',
       pages: 95,
       language: 'English',
-      subject: 'Computer Science, Agricultural Technology',
+      subject: 'Computer Science',
       status: 'published'
     },
     '2': {
@@ -50,22 +70,79 @@ const getDocumentById = (id: string) => {
       submissionDate: '2024-04-18',
       doi: '10.12345/ur.article.2024.002',
       accessRights: 'open_access',
+      // supervisor missing here — that's fine!
       ccLicense: 'CC BY-SA 4.0',
-      abstract: 'This research presents comprehensive deep learning frameworks specifically designed for Kinyarwanda natural language processing. We developed novel architectures that address the unique morphological and syntactic characteristics of Kinyarwanda, achieving state-of-the-art performance in tasks such as sentiment analysis, named entity recognition, and machine translation. Our models show significant improvements over existing approaches, with F1 scores exceeding 0.85 for most NLP tasks.',
-      keywords: ['NLP', 'Kinyarwanda', 'Deep Learning', 'African Languages', 'Machine Translation'],
+      abstract: '...',
+      keywords: ['NLP', 'Kinyarwanda'],
       downloads: 189,
       views: 756,
       citations: 5,
       fileSize: '1.8 MB',
       pages: 24,
       language: 'English',
-      subject: 'Natural Language Processing, African Languages',
+      subject: 'Natural Language Processing',
       status: 'published'
     }
   };
 
-  return documents[id as keyof typeof documents] || documents['1'];
+  return documents[id] || documents['1'];
 };
+
+// const getDocumentById = (id: string) => {
+//   const documents = {
+//     '1': {
+//       id: '1',
+//       title: 'Machine Learning Applications in Agricultural Yield Prediction for Rwanda',
+//       author: 'Marie Uwimana',
+//       authorEmail: 'marie.uwimana@ur.ac.rw',
+//       supervisor: 'Dr. Jean Mukiza',
+//       faculty: 'Engineering',
+//       department: 'Computer Science',
+//       type: 'Master\'s Thesis',
+//       year: '2024',
+//       submissionDate: '2024-05-10',
+//       doi: '10.12345/ur.thesis.2024.001',
+//       accessRights: 'open_access',
+//       ccLicense: 'CC BY 4.0',
+//       abstract: 'This thesis explores the application of machine learning techniques to predict agricultural yields in Rwanda. Using satellite imagery, weather data, and historical crop yield information, we developed models that can accurately forecast harvest outcomes. The research demonstrates significant improvements in prediction accuracy compared to traditional methods, with potential applications for food security planning and agricultural policy development in Rwanda. Our findings show that ensemble methods combining multiple data sources achieve the highest accuracy rates, with an average prediction error of less than 12%. The study contributes to both machine learning methodology and agricultural planning in developing countries.',
+//       keywords: ['Machine Learning', 'Agriculture', 'Rwanda', 'Yield Prediction', 'Satellite Imagery', 'Food Security'],
+//       downloads: 245,
+//       views: 1089,
+//       citations: 3,
+//       fileSize: '2.4 MB',
+//       pages: 95,
+//       language: 'English',
+//       subject: 'Computer Science, Agricultural Technology',
+//       status: 'published'
+//     },
+//     '2': {
+//       id: '2',
+//       title: 'Deep Learning Frameworks for Natural Language Processing in Kinyarwanda',
+//       author: 'Dr. Jean Mukiza',
+//       authorEmail: 'jean.mukiza@ur.ac.rw',
+//       faculty: 'Engineering',
+//       department: 'Computer Science',
+//       type: 'Research Article',
+//       year: '2024',
+//       submissionDate: '2024-04-18',
+//       doi: '10.12345/ur.article.2024.002',
+//       accessRights: 'open_access',
+//       ccLicense: 'CC BY-SA 4.0',
+//       abstract: 'This research presents comprehensive deep learning frameworks specifically designed for Kinyarwanda natural language processing. We developed novel architectures that address the unique morphological and syntactic characteristics of Kinyarwanda, achieving state-of-the-art performance in tasks such as sentiment analysis, named entity recognition, and machine translation. Our models show significant improvements over existing approaches, with F1 scores exceeding 0.85 for most NLP tasks.',
+//       keywords: ['NLP', 'Kinyarwanda', 'Deep Learning', 'African Languages', 'Machine Translation'],
+//       downloads: 189,
+//       views: 756,
+//       citations: 5,
+//       fileSize: '1.8 MB',
+//       pages: 24,
+//       language: 'English',
+//       subject: 'Natural Language Processing, African Languages',
+//       status: 'published'
+//     }
+//   };
+
+//   return documents[id as keyof typeof documents] || documents['1'];
+// };
 
 export default function DocumentLandingPage() {
   const { id } = useParams();

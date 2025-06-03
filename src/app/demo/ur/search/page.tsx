@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 const searchResults = [
@@ -170,7 +170,8 @@ export default function SearchResultsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <Suspense fallback={<div>Loading search results...</div>}>
+      <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white border-b shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
@@ -410,5 +411,6 @@ export default function SearchResultsPage() {
         </div>
       </div>
     </div>
+    </Suspense>
   );
 }

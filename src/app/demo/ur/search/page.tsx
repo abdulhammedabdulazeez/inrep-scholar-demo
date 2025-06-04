@@ -1,132 +1,149 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useState, useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+export const dynamic = "force-dynamic";
+
+import Link from "next/link";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 
 const searchResults = [
   {
-    id: '1',
-    title: 'Machine Learning Applications in Agricultural Yield Prediction for Rwanda',
-    author: 'Marie Uwimana',
-    faculty: 'Engineering',
-    department: 'Computer Science',
-    type: 'Master\'s Thesis',
-    year: '2024',
-    doi: '10.12345/ur.thesis.2024.001',
-    accessRights: 'open_access',
-    abstract: 'This thesis explores the application of machine learning techniques to predict agricultural yields in Rwanda using satellite imagery, weather data, and historical crop yield information...',
+    id: "1",
+    title:
+      "Machine Learning Applications in Agricultural Yield Prediction for Rwanda",
+    author: "Marie Uwimana",
+    faculty: "Engineering",
+    department: "Computer Science",
+    type: "Master's Thesis",
+    year: "2024",
+    doi: "10.12345/ur.thesis.2024.001",
+    accessRights: "open_access",
+    abstract:
+      "This thesis explores the application of machine learning techniques to predict agricultural yields in Rwanda using satellite imagery, weather data, and historical crop yield information...",
     downloads: 245,
-    views: 1089
+    views: 1089,
   },
   {
-    id: '2',
-    title: 'Deep Learning Frameworks for Natural Language Processing in Kinyarwanda',
-    author: 'Dr. Jean Mukiza',
-    faculty: 'Engineering',
-    department: 'Computer Science',
-    type: 'Research Article',
-    year: '2024',
-    doi: '10.12345/ur.article.2024.002',
-    accessRights: 'open_access',
-    abstract: 'A comprehensive study on developing NLP frameworks specifically designed for Kinyarwanda language processing and understanding...',
+    id: "2",
+    title:
+      "Deep Learning Frameworks for Natural Language Processing in Kinyarwanda",
+    author: "Dr. Jean Mukiza",
+    faculty: "Engineering",
+    department: "Computer Science",
+    type: "Research Article",
+    year: "2024",
+    doi: "10.12345/ur.article.2024.002",
+    accessRights: "open_access",
+    abstract:
+      "A comprehensive study on developing NLP frameworks specifically designed for Kinyarwanda language processing and understanding...",
     downloads: 189,
-    views: 756
+    views: 756,
   },
   {
-    id: '3',
-    title: 'Smart Grid Implementation for Rural Electrification in Rwanda',
-    author: 'Pierre Nkurunziza',
-    faculty: 'Engineering',
-    department: 'Electrical Engineering',
-    type: 'Master\'s Thesis',
-    year: '2024',
+    id: "3",
+    title: "Smart Grid Implementation for Rural Electrification in Rwanda",
+    author: "Pierre Nkurunziza",
+    faculty: "Engineering",
+    department: "Electrical Engineering",
+    type: "Master's Thesis",
+    year: "2024",
     doi: null,
-    accessRights: 'restricted',
-    abstract: 'Investigation of smart grid technologies for improving rural electrification in Rwanda with focus on renewable energy integration...',
+    accessRights: "restricted",
+    abstract:
+      "Investigation of smart grid technologies for improving rural electrification in Rwanda with focus on renewable energy integration...",
     downloads: 45,
-    views: 234
+    views: 234,
   },
   {
-    id: '4',
-    title: 'Sustainable Water Management Systems in Urban Rwanda',
-    author: 'Grace Munyangendo',
-    faculty: 'Science',
-    department: 'Environmental Science',
-    type: 'PhD Dissertation',
-    year: '2024',
-    doi: '10.12345/ur.phd.2024.003',
-    accessRights: 'open_access',
-    abstract: 'Comprehensive analysis of water management challenges in urban areas of Rwanda and proposed sustainable solutions...',
+    id: "4",
+    title: "Sustainable Water Management Systems in Urban Rwanda",
+    author: "Grace Munyangendo",
+    faculty: "Science",
+    department: "Environmental Science",
+    type: "PhD Dissertation",
+    year: "2024",
+    doi: "10.12345/ur.phd.2024.003",
+    accessRights: "open_access",
+    abstract:
+      "Comprehensive analysis of water management challenges in urban areas of Rwanda and proposed sustainable solutions...",
     downloads: 312,
-    views: 987
+    views: 987,
   },
   {
-    id: '5',
-    title: 'Traditional Medicine Integration in Modern Healthcare Systems',
-    author: 'Dr. Emmanuel Nsanzimana',
-    faculty: 'Medicine',
-    department: 'Public Health',
-    type: 'Research Article',
-    year: '2024',
+    id: "5",
+    title: "Traditional Medicine Integration in Modern Healthcare Systems",
+    author: "Dr. Emmanuel Nsanzimana",
+    faculty: "Medicine",
+    department: "Public Health",
+    type: "Research Article",
+    year: "2024",
     doi: null,
-    accessRights: 'private',
-    abstract: 'Exploring pathways for integrating traditional Rwandan medicine practices with contemporary healthcare delivery systems...',
+    accessRights: "private",
+    abstract:
+      "Exploring pathways for integrating traditional Rwandan medicine practices with contemporary healthcare delivery systems...",
     downloads: 0,
-    views: 12
+    views: 12,
   },
   {
-    id: '6',
-    title: 'Blockchain Technology Applications in Rwanda\'s Financial Sector',
-    author: 'Peter Nkurunziza',
-    faculty: 'Engineering',
-    department: 'Computer Science',
-    type: 'Master\'s Thesis',
-    year: '2024',
-    doi: '10.12345/ur.thesis.2024.004',
-    accessRights: 'restricted',
-    abstract: 'Analysis of blockchain implementation opportunities in Rwanda\'s emerging fintech ecosystem and regulatory considerations...',
+    id: "6",
+    title: "Blockchain Technology Applications in Rwanda's Financial Sector",
+    author: "Peter Nkurunziza",
+    faculty: "Engineering",
+    department: "Computer Science",
+    type: "Master's Thesis",
+    year: "2024",
+    doi: "10.12345/ur.thesis.2024.004",
+    accessRights: "restricted",
+    abstract:
+      "Analysis of blockchain implementation opportunities in Rwanda's emerging fintech ecosystem and regulatory considerations...",
     downloads: 78,
-    views: 345
-  }
+    views: 345,
+  },
 ];
 
 export default function SearchResultsPage() {
   const searchParams = useSearchParams();
   const [filters, setFilters] = useState({
-    query: searchParams?.get('q') || '',
-    faculty: searchParams?.get('faculty') || '',
-    type: searchParams?.get('type') || '',
-    year: searchParams?.get('year') || '',
-    accessRights: searchParams?.get('access') || '',
-    hasDownloads: false
+    query: searchParams?.get("q") || "",
+    faculty: searchParams?.get("faculty") || "",
+    type: searchParams?.get("type") || "",
+    year: searchParams?.get("year") || "",
+    accessRights: searchParams?.get("access") || "",
+    hasDownloads: false,
   });
-  const [sortBy, setSortBy] = useState('relevance');
-  const [userRole] = useState<'guest' | 'user' | 'admin'>('guest'); // Simulating guest access
+  const [sortBy, setSortBy] = useState("relevance");
+  const [userRole] = useState<"guest" | "user" | "admin">("guest"); // Simulating guest access
 
   // Filter results based on search criteria and access rights
-  const filteredResults = searchResults.filter(result => {
+  const filteredResults = searchResults.filter((result) => {
     // Access control simulation
-    if (userRole === 'guest' && result.accessRights === 'private') {
+    if (userRole === "guest" && result.accessRights === "private") {
       return false; // Guests cannot see private content
     }
 
     // Text search
     if (filters.query) {
       const searchTerm = filters.query.toLowerCase();
-      const searchableText = `${result.title} ${result.author} ${result.abstract}`.toLowerCase();
+      const searchableText =
+        `${result.title} ${result.author} ${result.abstract}`.toLowerCase();
       if (!searchableText.includes(searchTerm)) {
         return false;
       }
     }
 
     // Faculty filter
-    if (filters.faculty && result.faculty.toLowerCase() !== filters.faculty.toLowerCase()) {
+    if (
+      filters.faculty &&
+      result.faculty.toLowerCase() !== filters.faculty.toLowerCase()
+    ) {
       return false;
     }
 
     // Type filter
-    if (filters.type && result.type.toLowerCase() !== filters.type.toLowerCase()) {
+    if (
+      filters.type &&
+      result.type.toLowerCase() !== filters.type.toLowerCase()
+    ) {
       return false;
     }
 
@@ -146,48 +163,71 @@ export default function SearchResultsPage() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     // In a real app, this would update the URL and trigger a new search
-    console.log('Searching with filters:', filters);
+    console.log("Searching with filters:", filters);
   };
 
   const getAccessBadge = (accessRights: string) => {
     switch (accessRights) {
-      case 'open_access':
-        return <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">Open Access</span>;
-      case 'restricted':
-        return <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-medium">Restricted</span>;
-      case 'private':
-        return <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-medium">Private</span>;
+      case "open_access":
+        return (
+          <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+            Open Access
+          </span>
+        );
+      case "restricted":
+        return (
+          <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-medium">
+            Restricted
+          </span>
+        );
+      case "private":
+        return (
+          <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-medium">
+            Private
+          </span>
+        );
       default:
         return null;
     }
   };
 
   const canViewFullText = (accessRights: string) => {
-    if (userRole === 'admin') return true;
-    if (userRole === 'user' && accessRights !== 'private') return true;
-    if (userRole === 'guest' && accessRights === 'open_access') return true;
+    if (userRole === "admin") return true;
+    if (userRole === "user" && accessRights !== "private") return true;
+    if (userRole === "guest" && accessRights === "open_access") return true;
     return false;
   };
 
   return (
-    <Suspense fallback={<div>Loading search results...</div>}>
-      <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white border-b shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <Link href="/demo/ur" className="flex items-center space-x-3">
-                <div className="h-10 w-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">UR</div>
+                <div className="h-10 w-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">
+                  UR
+                </div>
                 <div>
-                  <h1 className="text-xl font-bold text-gray-900">University of Rwanda</h1>
+                  <h1 className="text-xl font-bold text-gray-900">
+                    University of Rwanda
+                  </h1>
                   <p className="text-sm text-gray-600">Repository Search</p>
                 </div>
               </Link>
             </div>
             <nav className="flex items-center space-x-4">
-              <Link href="/demo/ur" className="text-gray-600 hover:text-blue-600">Home</Link>
-              <Link href="/demo/ur/admin" className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
+              <Link
+                href="/demo/ur"
+                className="text-gray-600 hover:text-blue-600"
+              >
+                Home
+              </Link>
+              <Link
+                href="/demo/ur/admin"
+                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
+              >
                 Admin
               </Link>
             </nav>
@@ -200,16 +240,22 @@ export default function SearchResultsPage() {
           {/* Filters Sidebar */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow border p-6 sticky top-8">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Search & Filters</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Search & Filters
+              </h3>
 
               <form onSubmit={handleSearch} className="space-y-4">
                 {/* Search Query */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Search</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Search
+                  </label>
                   <input
                     type="text"
                     value={filters.query}
-                    onChange={(e) => setFilters(prev => ({ ...prev, query: e.target.value }))}
+                    onChange={(e) =>
+                      setFilters((prev) => ({ ...prev, query: e.target.value }))
+                    }
                     placeholder="Keywords, title, author..."
                     className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
@@ -217,10 +263,17 @@ export default function SearchResultsPage() {
 
                 {/* Faculty Filter */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Faculty</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Faculty
+                  </label>
                   <select
                     value={filters.faculty}
-                    onChange={(e) => setFilters(prev => ({ ...prev, faculty: e.target.value }))}
+                    onChange={(e) =>
+                      setFilters((prev) => ({
+                        ...prev,
+                        faculty: e.target.value,
+                      }))
+                    }
                     className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">All Faculties</option>
@@ -232,10 +285,14 @@ export default function SearchResultsPage() {
 
                 {/* Document Type */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Document Type</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Document Type
+                  </label>
                   <select
                     value={filters.type}
-                    onChange={(e) => setFilters(prev => ({ ...prev, type: e.target.value }))}
+                    onChange={(e) =>
+                      setFilters((prev) => ({ ...prev, type: e.target.value }))
+                    }
                     className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">All Types</option>
@@ -247,25 +304,38 @@ export default function SearchResultsPage() {
 
                 {/* Access Rights */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Access</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Access
+                  </label>
                   <select
                     value={filters.accessRights}
-                    onChange={(e) => setFilters(prev => ({ ...prev, accessRights: e.target.value }))}
+                    onChange={(e) =>
+                      setFilters((prev) => ({
+                        ...prev,
+                        accessRights: e.target.value,
+                      }))
+                    }
                     className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">All Access Types</option>
                     <option value="open_access">Open Access</option>
                     <option value="restricted">Restricted</option>
-                    {userRole !== 'guest' && <option value="private">Private</option>}
+                    {userRole !== "guest" && (
+                      <option value="private">Private</option>
+                    )}
                   </select>
                 </div>
 
                 {/* Year Filter */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Year</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Year
+                  </label>
                   <select
                     value={filters.year}
-                    onChange={(e) => setFilters(prev => ({ ...prev, year: e.target.value }))}
+                    onChange={(e) =>
+                      setFilters((prev) => ({ ...prev, year: e.target.value }))
+                    }
                     className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">All Years</option>
@@ -290,7 +360,10 @@ export default function SearchResultsPage() {
                 </p>
                 <p className="text-xs text-blue-600 mt-1">
                   You can view open access content and metadata.
-                  <Link href="/demo/ur" className="underline ml-1">Sign in</Link> for full access.
+                  <Link href="/demo/ur" className="underline ml-1">
+                    Sign in
+                  </Link>{" "}
+                  for full access.
                 </p>
               </div>
             </div>
@@ -301,7 +374,9 @@ export default function SearchResultsPage() {
             {/* Results Header */}
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Search Results</h2>
+                <h2 className="text-2xl font-bold text-gray-900">
+                  Search Results
+                </h2>
                 <p className="text-gray-600">
                   Found {filteredResults.length} documents
                   {filters.query && ` for "${filters.query}"`}
@@ -309,7 +384,9 @@ export default function SearchResultsPage() {
               </div>
 
               <div className="flex items-center space-x-4">
-                <label className="text-sm font-medium text-gray-700">Sort by:</label>
+                <label className="text-sm font-medium text-gray-700">
+                  Sort by:
+                </label>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
@@ -326,18 +403,27 @@ export default function SearchResultsPage() {
             {/* Results List */}
             <div className="space-y-6">
               {filteredResults.map((result) => (
-                <div key={result.id} className="bg-white rounded-lg shadow border p-6 hover:shadow-md transition">
+                <div
+                  key={result.id}
+                  className="bg-white rounded-lg shadow border p-6 hover:shadow-md transition"
+                >
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-2">
                         {getAccessBadge(result.accessRights)}
-                        <span className="text-sm text-gray-500">{result.type}</span>
+                        <span className="text-sm text-gray-500">
+                          {result.type}
+                        </span>
                         <span className="text-sm text-gray-500">•</span>
-                        <span className="text-sm text-gray-500">{result.year}</span>
+                        <span className="text-sm text-gray-500">
+                          {result.year}
+                        </span>
                         {result.doi && (
                           <>
                             <span className="text-sm text-gray-500">•</span>
-                            <span className="text-sm text-blue-600">DOI: {result.doi}</span>
+                            <span className="text-sm text-blue-600">
+                              DOI: {result.doi}
+                            </span>
                           </>
                         )}
                       </div>
@@ -352,14 +438,19 @@ export default function SearchResultsPage() {
                       </h3>
 
                       <p className="text-gray-600 mb-3">
-                        by <strong>{result.author}</strong> • {result.faculty} • {result.department}
+                        by <strong>{result.author}</strong> • {result.faculty} •{" "}
+                        {result.department}
                       </p>
 
                       <p className="text-gray-700 leading-relaxed mb-4">
                         {result.abstract}
-                        {!canViewFullText(result.accessRights) && result.accessRights !== 'open_access' && (
-                          <span className="text-gray-500 italic"> [Full text access restricted]</span>
-                        )}
+                        {!canViewFullText(result.accessRights) &&
+                          result.accessRights !== "open_access" && (
+                            <span className="text-gray-500 italic">
+                              {" "}
+                              [Full text access restricted]
+                            </span>
+                          )}
                       </p>
                     </div>
                   </div>
@@ -382,7 +473,7 @@ export default function SearchResultsPage() {
                           📄 View PDF
                         </button>
                       )}
-                      {result.accessRights === 'open_access' && (
+                      {result.accessRights === "open_access" && (
                         <button className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition text-sm">
                           ⬇️ Download
                         </button>
@@ -396,12 +487,21 @@ export default function SearchResultsPage() {
             {/* Pagination */}
             <div className="mt-8 flex items-center justify-center">
               <div className="flex items-center space-x-2">
-                <button className="px-3 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50 disabled:opacity-50" disabled>
+                <button
+                  className="px-3 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50 disabled:opacity-50"
+                  disabled
+                >
                   Previous
                 </button>
-                <button className="px-3 py-2 bg-blue-600 text-white rounded-md text-sm">1</button>
-                <button className="px-3 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50">2</button>
-                <button className="px-3 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50">3</button>
+                <button className="px-3 py-2 bg-blue-600 text-white rounded-md text-sm">
+                  1
+                </button>
+                <button className="px-3 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50">
+                  2
+                </button>
+                <button className="px-3 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50">
+                  3
+                </button>
                 <button className="px-3 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50">
                   Next
                 </button>
@@ -411,6 +511,5 @@ export default function SearchResultsPage() {
         </div>
       </div>
     </div>
-    </Suspense>
   );
 }

@@ -203,13 +203,13 @@ export default function SearchResultsClient() {
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Link href="/demo/ur" className="flex items-center space-x-3">
+              <Link href="/demo/alu" className="flex items-center space-x-3">
                 <div className="h-10 w-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">
-                  UR
+                  ALU
                 </div>
                 <div>
                   <h1 className="text-xl font-bold text-gray-900">
-                    University of Rwanda
+                    African Leadership University
                   </h1>
                   <p className="text-sm text-gray-600">Repository Search</p>
                 </div>
@@ -217,13 +217,13 @@ export default function SearchResultsClient() {
             </div>
             <nav className="flex items-center space-x-4">
               <Link
-                href="/demo/ur"
+                href="/demo/alu"
                 className="text-gray-600 hover:text-blue-600"
               >
                 Home
               </Link>
               <Link
-                href="/demo/ur/admin"
+                href="/demo/alu/admin"
                 className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
               >
                 Admin
@@ -358,7 +358,7 @@ export default function SearchResultsClient() {
                 </p>
                 <p className="text-xs text-blue-600 mt-1">
                   You can view open access content and metadata.
-                  <Link href="/demo/ur" className="underline ml-1">
+                  <Link href="/demo/alu" className="underline ml-1">
                     Sign in
                   </Link>{" "}
                   for full access.
@@ -428,7 +428,7 @@ export default function SearchResultsClient() {
 
                       <h3 className="text-xl font-semibold text-gray-900 mb-2">
                         <Link
-                          href={`/demo/ur/documents/${result.id}`}
+                          href={`/demo/alu/documents/${result.id}`}
                           className="hover:text-blue-600 transition"
                         >
                           {result.title}
@@ -461,7 +461,7 @@ export default function SearchResultsClient() {
 
                     <div className="flex items-center space-x-3">
                       <Link
-                        href={`/demo/ur/documents/${result.id}`}
+                        href={`/demo/alu/documents/${result.id}`}
                         className="text-blue-600 hover:text-blue-800 font-medium"
                       >
                         View Details

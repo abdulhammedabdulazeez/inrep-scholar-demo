@@ -2,7 +2,7 @@
 
 A modern, no-code institutional repository platform designed specifically for African universities. Built with Next.js 15, TypeScript, and Tailwind CSS.
 
-![InRep Scholar Demo](https://via.placeholder.com/800x400/2563eb/ffffff?text=InRep+Scholar+Repository+Platform)
+![InRep Scholar Demo](https://github.com/abdulhammedabdulazeez/inrep-scholar-demo)
 
 ## 🌟 Features
 
@@ -54,9 +54,9 @@ bun dev
 
 ### Access the Demo
 
-- **Repository Home**: http://localhost:3000/demo/ur
-- **Admin Dashboard**: http://localhost:3000/demo/ur/admin
-- **User Dashboard**: http://localhost:3000/demo/ur/user
+- **Repository Home**: http://localhost:3000/demo/alu
+- **Admin Dashboard**: http://localhost:3000/demo/alu/admin
+- **User Dashboard**: http://localhost:3000/demo/alu/user
 - **Global Platform**: http://localhost:3000
 
 ## 🏗️ Project Structure
@@ -64,7 +64,7 @@ bun dev
 ```
 src/
 ├── app/                          # Next.js 15 App Router
-│   ├── demo/ur/                 # University of Rwanda Demo
+│   ├── demo/alu/                 # African Leadership University Demo
 │   │   ├── admin/               # Admin-specific pages
 │   │   ├── user/                # User-specific pages
 │   │   ├── documents/           # Document management
@@ -106,11 +106,11 @@ src/
 - **Styling**: Tailwind CSS
 - **Runtime**: Bun
 - **Linting**: Biome
-- **Deployment**: Netlify-ready
+- **Deployment**: Deployment-ready
 
 ## 🌍 Multi-Tenant Demo
 
-The platform demonstrates multi-tenant functionality with the University of Rwanda repository:
+The platform demonstrates multi-tenant functionality with the African Leadership University repository:
 
 - **Public Access**: Browse open access research
 - **User Access**: Upload documents, manage submissions
@@ -134,68 +134,8 @@ NEXT_PUBLIC_ENABLE_SCHOLAR_AI=true
 ```
 
 ### Deployment
+Deployed on vercel - inrep-scholar-demo.vercel.app/
 
-#### Netlify (Recommended)
-```bash
-# Build command
-bun run build
-
-# Publish directory
-out
-
-# Environment variables
-NEXT_PUBLIC_APP_URL=https://your-domain.netlify.app
-```
-
-#### Vercel
-```bash
-# Automatic deployment on push to main branch
-vercel --prod
-```
-
-## 📋 Development Workflow
-
-### Adding New Features
-1. Create feature branch: `git checkout -b feature/new-feature`
-2. Implement changes with proper TypeScript types
-3. Test across all user roles (Guest, User, Admin)
-4. Run linter: `bun run lint`
-5. Create pull request
-
-### Code Standards
-- TypeScript for type safety
-- Tailwind CSS for styling
-- Client components for interactivity
-- Server components for static content
-- Responsive design (mobile-first)
-
-## 🎯 Roadmap
-
-### Phase 1: Core Platform (✅ Complete)
-- Multi-tenant architecture
-- Document upload and management
-- User authentication and roles
-- Basic search and discovery
-
-### Phase 2: Advanced Features (🚧 In Progress)
-- Real plagiarism detection integration
-- DOI assignment via DataCite
-- Email notifications
-- Advanced analytics
-
-### Phase 3: Integrations (📋 Planned)
-- ORCID integration
-- External search indexing
-- API for third-party tools
-- Mobile applications
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Open a Pull Request
 
 ## 📄 License
 
@@ -206,7 +146,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 InRep Scholar is designed specifically for African universities to manage their institutional research outputs. The platform addresses the unique challenges of low-resource environments while providing world-class repository functionality.
 
 **Built for African universities, by African technologists.**
-
----
-
-For support or questions, please open an issue or contact the development team.

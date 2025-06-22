@@ -7,7 +7,7 @@ export default function AdminDashboard() {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-          <p className="text-gray-600">University of Rwanda Repository Overview</p>
+          <p className="text-gray-600">African Leadership University Repository Overview</p>
         </div>
 
         {/* Stats Grid */}

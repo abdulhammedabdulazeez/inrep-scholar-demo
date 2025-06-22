@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useState } from 'react';
-import { useParams } from 'next/navigation';
+import Link from "next/link";
+import { useState } from "react";
+import { useParams } from "next/navigation";
 
 type Document = {
   id: string;
@@ -33,59 +33,61 @@ type Document = {
 // Mock document data based on ID
 const getDocumentById = (id: string): Document => {
   const documents: Record<string, Document> = {
-    '1': {
-      id: '1',
-      title: 'Machine Learning Applications in Agricultural Yield Prediction for Rwanda',
-      author: 'Marie Uwimana',
-      authorEmail: 'marie.uwimana@ur.ac.rw',
-      supervisor: 'Dr. Jean Mukiza', // present here
-      faculty: 'Engineering',
-      department: 'Computer Science',
-      type: 'Master\'s Thesis',
-      year: '2024',
-      submissionDate: '2024-05-10',
-      doi: '10.12345/ur.thesis.2024.001',
-      accessRights: 'open_access',
-      ccLicense: 'CC BY 4.0',
-      abstract: '...',
-      keywords: ['Machine Learning', 'Agriculture'],
+    "1": {
+      id: "1",
+      title:
+        "Machine Learning Applications in Agricultural Yield Prediction for Rwanda",
+      author: "Marie Uwimana",
+      authorEmail: "marie.uwimana@ur.ac.rw",
+      supervisor: "Dr. Jean Mukiza", // present here
+      faculty: "Engineering",
+      department: "Computer Science",
+      type: "Master's Thesis",
+      year: "2024",
+      submissionDate: "2024-05-10",
+      doi: "10.12345/ur.thesis.2024.001",
+      accessRights: "open_access",
+      ccLicense: "CC BY 4.0",
+      abstract: "...",
+      keywords: ["Machine Learning", "Agriculture"],
       downloads: 245,
       views: 1089,
       citations: 3,
-      fileSize: '2.4 MB',
+      fileSize: "2.4 MB",
       pages: 95,
-      language: 'English',
-      subject: 'Computer Science',
-      status: 'published'
+      language: "English",
+      subject: "Computer Science",
+      status: "published",
     },
-    '2': {
-      id: '2',
-      title: 'Deep Learning Frameworks for Natural Language Processing in Kinyarwanda',
-      author: 'Dr. Jean Mukiza',
-      authorEmail: 'jean.mukiza@ur.ac.rw',
-      faculty: 'Engineering',
-      department: 'Computer Science',
-      type: 'Research Article',
-      year: '2024',
-      submissionDate: '2024-04-18',
-      doi: '10.12345/ur.article.2024.002',
-      accessRights: 'open_access',
+    "2": {
+      id: "2",
+      title:
+        "Deep Learning Frameworks for Natural Language Processing in Kinyarwanda",
+      author: "Dr. Jean Mukiza",
+      authorEmail: "jean.mukiza@ur.ac.rw",
+      faculty: "Engineering",
+      department: "Computer Science",
+      type: "Research Article",
+      year: "2024",
+      submissionDate: "2024-04-18",
+      doi: "10.12345/ur.article.2024.002",
+      accessRights: "open_access",
       // supervisor missing here — that's fine!
-      ccLicense: 'CC BY-SA 4.0',
-      abstract: '...',
-      keywords: ['NLP', 'Kinyarwanda'],
+      ccLicense: "CC BY-SA 4.0",
+      abstract: "...",
+      keywords: ["NLP", "Kinyarwanda"],
       downloads: 189,
       views: 756,
       citations: 5,
-      fileSize: '1.8 MB',
+      fileSize: "1.8 MB",
       pages: 24,
-      language: 'English',
-      subject: 'Natural Language Processing',
-      status: 'published'
-    }
+      language: "English",
+      subject: "Natural Language Processing",
+      status: "published",
+    },
   };
 
-  return documents[id] || documents['1'];
+  return documents[id] || documents["1"];
 };
 
 // const getDocumentById = (id: string) => {
@@ -146,23 +148,27 @@ const getDocumentById = (id: string): Document => {
 
 export default function DocumentLandingPage() {
   const { id } = useParams();
-  
+
   if (!id || Array.isArray(id)) {
     throw new Error("Invalid document ID");
   }
-  
+
   const document = getDocumentById(id);
-  const [userRole] = useState<'guest' | 'user' | 'admin'>('guest');
+  const [userRole] = useState<"guest" | "user" | "admin">("guest");
   const [showScholarChat, setShowScholarChat] = useState(false);
   const [chatMessages, setChatMessages] = useState([
-    { role: 'assistant', content: 'Hi! I\'m Scholar AI. I can help you understand this research. What would you like to know about this thesis?' }
+    {
+      role: "assistant",
+      content:
+        "Hi! I'm Scholar AI. I can help you understand this research. What would you like to know about this thesis?",
+    },
   ]);
-  const [chatInput, setChatInput] = useState('');
+  const [chatInput, setChatInput] = useState("");
 
   const canViewFullText = (accessRights: string) => {
-    if (userRole === 'admin') return true;
-    if (userRole === 'user' && accessRights !== 'private') return true;
-    if (userRole === 'guest' && accessRights === 'open_access') return true;
+    if (userRole === "admin") return true;
+    if (userRole === "user" && accessRights !== "private") return true;
+    if (userRole === "guest" && accessRights === "open_access") return true;
     return false;
   };
 
@@ -173,20 +179,27 @@ export default function DocumentLandingPage() {
     // Add user message
     const newMessages = [
       ...chatMessages,
-      { role: 'user', content: chatInput },
-      { role: 'assistant', content: `Based on this thesis about ${document.title.toLowerCase()}, I can tell you that the research focuses on ${document.abstract.split('.')[0].toLowerCase()}. The methodology involves machine learning techniques and shows promising results for agricultural applications in Rwanda. Would you like me to explain any specific aspect in more detail?` }
+      { role: "user", content: chatInput },
+      {
+        role: "assistant",
+        content: `Based on this thesis about ${document.title.toLowerCase()}, I can tell you that the research focuses on ${document.abstract
+          .split(".")[0]
+          .toLowerCase()}. The methodology involves machine learning techniques and shows promising results for agricultural applications in Rwanda. Would you like me to explain any specific aspect in more detail?`,
+      },
     ];
 
     setChatMessages(newMessages);
-    setChatInput('');
+    setChatInput("");
   };
 
   const generateBibTeX = () => {
-    return `@${document.type.includes('Thesis') ? 'mastersthesis' : 'article'}{${document.author.split(' ').join('').toLowerCase()}${document.year},
+    return `@${
+      document.type.includes("Thesis") ? "mastersthesis" : "article"
+    }{${document.author.split(" ").join("").toLowerCase()}${document.year},
   title={${document.title}},
   author={${document.author}},
   year={${document.year}},
-  school={University of Rwanda},
+  school={African Leadership University},
   type={${document.type}},
   doi={${document.doi}},
   url={https://ur.inrepscholar.com/documents/${document.id}}
@@ -195,12 +208,24 @@ export default function DocumentLandingPage() {
 
   const getAccessBadge = (accessRights: string) => {
     switch (accessRights) {
-      case 'open_access':
-        return <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">🌐 Open Access</span>;
-      case 'restricted':
-        return <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">🔒 Restricted Access</span>;
-      case 'private':
-        return <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium">🚫 Private</span>;
+      case "open_access":
+        return (
+          <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
+            🌐 Open Access
+          </span>
+        );
+      case "restricted":
+        return (
+          <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">
+            🔒 Restricted Access
+          </span>
+        );
+      case "private":
+        return (
+          <span className="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm font-medium">
+            🚫 Private
+          </span>
+        );
       default:
         return null;
     }
@@ -212,17 +237,34 @@ export default function DocumentLandingPage() {
       <header className="bg-white border-b shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link href="/demo/ur" className="flex items-center space-x-3">
-              <div className="h-10 w-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">UR</div>
+            <Link href="/demo/alu" className="flex items-center space-x-3">
+              <div className="h-10 w-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">
+                ALU
+              </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">University of Rwanda</h1>
+                <h1 className="text-xl font-bold text-gray-900">
+                  African Leadership University
+                </h1>
                 <p className="text-sm text-gray-600">Repository</p>
               </div>
             </Link>
             <nav className="flex items-center space-x-4">
-              <Link href="/demo/ur/search" className="text-gray-600 hover:text-blue-600">Search</Link>
-              <Link href="/demo/ur" className="text-gray-600 hover:text-blue-600">Home</Link>
-              <Link href="/demo/ur/admin" className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
+              <Link
+                href="/demo/alu/search"
+                className="text-gray-600 hover:text-blue-600"
+              >
+                Search
+              </Link>
+              <Link
+                href="/demo/alu"
+                className="text-gray-600 hover:text-blue-600"
+              >
+                Home
+              </Link>
+              <Link
+                href="/demo/alu/admin"
+                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
+              >
                 Admin
               </Link>
             </nav>
@@ -233,9 +275,13 @@ export default function DocumentLandingPage() {
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Breadcrumb */}
         <nav className="text-sm text-gray-600 mb-6">
-          <Link href="/demo/ur" className="hover:text-blue-600">Home</Link>
+          <Link href="/demo/alu" className="hover:text-blue-600">
+            Home
+          </Link>
           <span className="mx-2">/</span>
-          <Link href="/demo/ur/search" className="hover:text-blue-600">Search</Link>
+          <Link href="/demo/alu/search" className="hover:text-blue-600">
+            Search
+          </Link>
           <span className="mx-2">/</span>
           <span>Document</span>
         </nav>
@@ -249,23 +295,46 @@ export default function DocumentLandingPage() {
                 <div className="flex-1">
                   <div className="flex items-center space-x-3 mb-3">
                     {getAccessBadge(document.accessRights)}
-                    <span className="text-sm text-gray-500">{document.type}</span>
+                    <span className="text-sm text-gray-500">
+                      {document.type}
+                    </span>
                     {document.doi && (
                       <>
                         <span className="text-sm text-gray-500">•</span>
-                        <span className="text-sm text-blue-600">DOI: {document.doi}</span>
+                        <span className="text-sm text-blue-600">
+                          DOI: {document.doi}
+                        </span>
                       </>
                     )}
                   </div>
 
-                  <h1 className="text-3xl font-bold text-gray-900 mb-4">{document.title}</h1>
+                  <h1 className="text-3xl font-bold text-gray-900 mb-4">
+                    {document.title}
+                  </h1>
 
                   <div className="space-y-2 text-gray-600">
-                    <p><strong>Author:</strong> {document.author} ({document.authorEmail})</p>
-                    {document.supervisor && <p><strong>Supervisor:</strong> {document.supervisor}</p>}
-                    <p><strong>Faculty:</strong> {document.faculty} • <strong>Department:</strong> {document.department}</p>
-                    <p><strong>Year:</strong> {document.year} • <strong>Language:</strong> {document.language}</p>
-                    {document.ccLicense && <p><strong>License:</strong> {document.ccLicense}</p>}
+                    <p>
+                      <strong>Author:</strong> {document.author} (
+                      {document.authorEmail})
+                    </p>
+                    {document.supervisor && (
+                      <p>
+                        <strong>Supervisor:</strong> {document.supervisor}
+                      </p>
+                    )}
+                    <p>
+                      <strong>Faculty:</strong> {document.faculty} •{" "}
+                      <strong>Department:</strong> {document.department}
+                    </p>
+                    <p>
+                      <strong>Year:</strong> {document.year} •{" "}
+                      <strong>Language:</strong> {document.language}
+                    </p>
+                    {document.ccLicense && (
+                      <p>
+                        <strong>License:</strong> {document.ccLicense}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -299,8 +368,15 @@ export default function DocumentLandingPage() {
               {!canViewFullText(document.accessRights) && (
                 <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-md">
                   <p className="text-yellow-800">
-                    <strong>Access Restricted:</strong> Full text access is limited.
-                    <Link href="/demo/ur" className="text-blue-600 hover:text-blue-800 ml-1">Sign in</Link> to request access or contact the author.
+                    <strong>Access Restricted:</strong> Full text access is
+                    limited.
+                    <Link
+                      href="/demo/alu"
+                      className="text-blue-600 hover:text-blue-800 ml-1"
+                    >
+                      Sign in
+                    </Link>{" "}
+                    to request access or contact the author.
                   </p>
                 </div>
               )}
@@ -308,13 +384,19 @@ export default function DocumentLandingPage() {
 
             {/* Abstract */}
             <div className="bg-white rounded-lg shadow border p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Abstract</h3>
-              <p className="text-gray-700 leading-relaxed">{document.abstract}</p>
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                Abstract
+              </h3>
+              <p className="text-gray-700 leading-relaxed">
+                {document.abstract}
+              </p>
             </div>
 
             {/* Keywords */}
             <div className="bg-white rounded-lg shadow border p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Keywords</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                Keywords
+              </h3>
               <div className="flex flex-wrap gap-2">
                 {document.keywords.map((keyword, index) => (
                   <span
@@ -330,12 +412,16 @@ export default function DocumentLandingPage() {
             {/* PDF Viewer (Mock) */}
             {canViewFullText(document.accessRights) && (
               <div className="bg-white rounded-lg shadow border p-6">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">Document Preview</h3>
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                  Document Preview
+                </h3>
                 <div className="bg-gray-100 h-96 rounded-lg flex items-center justify-center">
                   <div className="text-center text-gray-500">
                     <div className="text-4xl mb-4">📄</div>
                     <p>PDF Viewer</p>
-                    <p className="text-sm">{document.pages} pages • {document.fileSize}</p>
+                    <p className="text-sm">
+                      {document.pages} pages • {document.fileSize}
+                    </p>
                     <button className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
                       Open Full PDF
                     </button>
@@ -347,16 +433,25 @@ export default function DocumentLandingPage() {
             {/* Scholar AI Chat */}
             {showScholarChat && (
               <div className="bg-white rounded-lg shadow border p-6">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">🤖 Scholar AI Assistant</h3>
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                  🤖 Scholar AI Assistant
+                </h3>
 
                 <div className="border rounded-lg p-4 h-64 overflow-y-auto mb-4 bg-gray-50">
                   {chatMessages.map((message, index) => (
-                    <div key={index} className={`mb-3 ${message.role === 'user' ? 'text-right' : 'text-left'}`}>
-                      <div className={`inline-block p-3 rounded-lg max-w-xs ${
-                        message.role === 'user'
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-white border'
-                      }`}>
+                    <div
+                      key={index}
+                      className={`mb-3 ${
+                        message.role === "user" ? "text-right" : "text-left"
+                      }`}
+                    >
+                      <div
+                        className={`inline-block p-3 rounded-lg max-w-xs ${
+                          message.role === "user"
+                            ? "bg-blue-600 text-white"
+                            : "bg-white border"
+                        }`}
+                      >
                         {message.content}
                       </div>
                     </div>
@@ -383,31 +478,47 @@ export default function DocumentLandingPage() {
 
             {/* Comments Section */}
             <div className="bg-white rounded-lg shadow border p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Comments & Discussion</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                Comments & Discussion
+              </h3>
 
               <div className="space-y-4 mb-6">
                 <div className="border-l-4 border-blue-500 pl-4">
                   <div className="flex items-center space-x-2 mb-2">
-                    <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white text-sm font-bold">JM</div>
+                    <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                      JM
+                    </div>
                     <span className="font-medium">Dr. Jean Mukiza</span>
                     <span className="text-gray-500 text-sm">2 days ago</span>
                   </div>
-                  <p className="text-gray-700">Excellent work, Marie! The methodology is sound and the results are very promising for agricultural applications in Rwanda. Have you considered extending this to other crops?</p>
+                  <p className="text-gray-700">
+                    Excellent work, Marie! The methodology is sound and the
+                    results are very promising for agricultural applications in
+                    Rwanda. Have you considered extending this to other crops?
+                  </p>
                 </div>
 
                 <div className="border-l-4 border-gray-300 pl-4">
                   <div className="flex items-center space-x-2 mb-2">
-                    <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-bold">PN</div>
+                    <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                      PN
+                    </div>
                     <span className="font-medium">Peter Nkurunziza</span>
                     <span className="text-gray-500 text-sm">1 day ago</span>
                   </div>
-                  <p className="text-gray-700">This research aligns well with my work on rural technology adoption. The satellite imagery approach is particularly innovative.</p>
+                  <p className="text-gray-700">
+                    This research aligns well with my work on rural technology
+                    adoption. The satellite imagery approach is particularly
+                    innovative.
+                  </p>
                 </div>
               </div>
 
-              {userRole !== 'guest' ? (
+              {userRole !== "guest" ? (
                 <div className="border-t pt-4">
-                  <h4 className="font-medium text-gray-900 mb-3">Add a comment</h4>
+                  <h4 className="font-medium text-gray-900 mb-3">
+                    Add a comment
+                  </h4>
                   <textarea
                     placeholder="Share your thoughts..."
                     className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -420,7 +531,13 @@ export default function DocumentLandingPage() {
               ) : (
                 <div className="border-t pt-4 text-center">
                   <p className="text-gray-600">
-                    <Link href="/demo/ur" className="text-blue-600 hover:text-blue-800">Sign in</Link> to join the discussion
+                    <Link
+                      href="/demo/alu"
+                      className="text-blue-600 hover:text-blue-800"
+                    >
+                      Sign in
+                    </Link>{" "}
+                    to join the discussion
                   </p>
                 </div>
               )}
@@ -431,7 +548,9 @@ export default function DocumentLandingPage() {
           <div className="lg:col-span-1 space-y-6">
             {/* Document Metrics */}
             <div className="bg-white rounded-lg shadow border p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Metrics</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Metrics
+              </h3>
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Downloads</span>
@@ -458,18 +577,27 @@ export default function DocumentLandingPage() {
 
             {/* Citation */}
             <div className="bg-white rounded-lg shadow border p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Citation</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Citation
+              </h3>
               <div className="space-y-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">APA Style</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    APA Style
+                  </label>
                   <div className="bg-gray-50 p-3 rounded text-sm text-gray-800">
-                    {document.author} ({document.year}). <em>{document.title}</em>. University of Rwanda.
+                    {document.author} ({document.year}).{" "}
+                    <em>{document.title}</em>. African Leadership University.
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">BibTeX</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    BibTeX
+                  </label>
                   <div className="bg-gray-50 p-3 rounded text-xs text-gray-800 font-mono">
-                    <pre className="whitespace-pre-wrap">{generateBibTeX()}</pre>
+                    <pre className="whitespace-pre-wrap">
+                      {generateBibTeX()}
+                    </pre>
                   </div>
                 </div>
                 <button className="w-full bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 transition text-sm">
@@ -480,7 +608,9 @@ export default function DocumentLandingPage() {
 
             {/* Social Share */}
             <div className="bg-white rounded-lg shadow border p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Share</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Share
+              </h3>
               <div className="space-y-2">
                 <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition text-sm">
                   📘 Share on Facebook
@@ -499,15 +629,31 @@ export default function DocumentLandingPage() {
 
             {/* Related Documents */}
             <div className="bg-white rounded-lg shadow border p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Related Research</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Related Research
+              </h3>
               <div className="space-y-3">
-                <Link href="/demo/ur/documents/2" className="block p-3 border rounded hover:bg-gray-50 transition">
-                  <h4 className="font-medium text-sm text-gray-900 mb-1">NLP for Kinyarwanda</h4>
-                  <p className="text-xs text-gray-600">Dr. Jean Mukiza • 2024</p>
+                <Link
+                  href="/demo/alu/documents/2"
+                  className="block p-3 border rounded hover:bg-gray-50 transition"
+                >
+                  <h4 className="font-medium text-sm text-gray-900 mb-1">
+                    NLP for Kinyarwanda
+                  </h4>
+                  <p className="text-xs text-gray-600">
+                    Dr. Jean Mukiza • 2024
+                  </p>
                 </Link>
-                <Link href="/demo/ur/documents/4" className="block p-3 border rounded hover:bg-gray-50 transition">
-                  <h4 className="font-medium text-sm text-gray-900 mb-1">Water Management Systems</h4>
-                  <p className="text-xs text-gray-600">Grace Munyangendo • 2024</p>
+                <Link
+                  href="/demo/alu/documents/4"
+                  className="block p-3 border rounded hover:bg-gray-50 transition"
+                >
+                  <h4 className="font-medium text-sm text-gray-900 mb-1">
+                    Water Management Systems
+                  </h4>
+                  <p className="text-xs text-gray-600">
+                    Grace Munyangendo • 2024
+                  </p>
                 </Link>
               </div>
             </div>

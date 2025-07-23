@@ -34,6 +34,15 @@ const nextConfig = {
       },
     ],
   },
+
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*", // All requests to /api/* ...
+        destination: "http://127.0.0.1:8000/api/:path*", // ...are proxied to your backend
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

@@ -1,8 +1,13 @@
+"use client";
+
+import LogInWithUni from "@/components/layout/LogInWithUni";
+import { useGeneralStore } from "@/store/generalStore";
 import Link from "next/link";
 
 export default function GlobalHomePage() {
+  const uniName = useGeneralStore((state) => state.affiliatedUni);
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+    <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-indigo-50">
       {/* Header */}
       <header className="bg-white border-b shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
@@ -30,12 +35,13 @@ export default function GlobalHomePage() {
               >
                 Contact
               </Link>
-              <Link
-                href="/demo/alu"
+              <LogInWithUni />
+              {/* <Link
+                href={`/demo/${uniName.short.toLowerCase()}`}
                 className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
               >
-                View Demo Repository
-              </Link>
+                View {uniName.name} Repository
+              </Link> */}
             </nav>
           </div>
         </div>

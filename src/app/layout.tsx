@@ -1,4 +1,6 @@
+import Providers from "@/providers/providers";
 import "./globals.css";
+import { Toaster } from "react-hot-toast";
 
 export const metadata = {
   title: "InRep Scholar Demo",
@@ -12,8 +14,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="antialiased font-sans">
-        {children}
+      <body className="antialiased font-sans" suppressHydrationWarning>
+        <Providers>{children}</Providers>
+        <Toaster position="top-right" />
       </body>
     </html>
   );

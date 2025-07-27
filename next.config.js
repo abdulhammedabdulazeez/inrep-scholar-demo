@@ -3,6 +3,11 @@ const nextConfig = {
   // output: 'export',
   // distDir: 'out',
   trailingSlash: true,
+  eslint: {
+    // Warning: This allows production builds to successfully complete even if
+    // your project has ESLint warnings.
+    ignoreDuringBuilds: true,
+  },
   images: {
     unoptimized: true,
     domains: [

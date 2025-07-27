@@ -1,7 +1,6 @@
 import { UseFormSetValue } from "react-hook-form";
 import { RegisterUniFormFields } from "./types";
 
-
 export function generateSubdomain(universityName: string) {
   return universityName
     .toLowerCase()
@@ -26,7 +25,7 @@ export const handleUniversityNameChange = (
   setValue: UseFormSetValue<RegisterUniFormFields>
 ) => {
   const name = e.target.value;
-  setValue("universityName", name);
+  setValue("university_name", name);
   if (name.length >= 3) {
     const suggested = generateSubdomain(name);
     setValue("subdomain", suggested);

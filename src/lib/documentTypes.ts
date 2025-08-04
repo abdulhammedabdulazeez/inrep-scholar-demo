@@ -68,3 +68,12 @@ export interface DocumentDetail {
   comments: DocumentComment[];
   reviews: DocumentReview[];
 }
+
+// New interface for the paginated response from the backend
+export interface DocumentListResponse {
+  results: DocumentDetail[];
+  total: number;
+  page: number;
+  page_size: number;
+  pages: number;
+}

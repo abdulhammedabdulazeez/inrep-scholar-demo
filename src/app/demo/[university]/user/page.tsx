@@ -1,43 +1,38 @@
-import Link from "next/link";
+"use client";
 
-const userDocuments = [
-  {
-    id: "1",
-    title:
-      "Machine Learning Applications in Agricultural Yield Prediction for Rwanda",
-    type: "Master's Thesis",
-    status: "published",
-    submissionDate: "2024-05-10",
-    publishedDate: "2024-05-20",
-    doi: "10.12345/ur.thesis.2024.001",
-    downloads: 245,
-    views: 1089,
-  },
-  {
-    id: "8",
-    title: "IoT Sensors for Smart Agriculture in Rwanda",
-    type: "Research Article",
-    status: "under_review",
-    submissionDate: "2024-06-01",
-    publishedDate: null,
-    doi: null,
-    downloads: 0,
-    views: 12,
-  },
-  {
-    id: "9",
-    title: "Climate Change Adaptation Strategies for Rwandan Farmers",
-    type: "Conference Paper",
-    status: "draft",
-    submissionDate: null,
-    publishedDate: null,
-    doi: null,
-    downloads: 0,
-    views: 0,
-  },
-];
+import Link from "next/link";
+import { useUserStore } from "@/store/userStore";
+import { useGeneralStore } from "@/store/generalStore";
+import UserAvatar from "@/components/user-avatar";
+import {
+  Upload,
+  FileText,
+  CheckCircle,
+  Download,
+  Eye,
+  Search,
+  User,
+  Plus,
+  Calendar,
+  Clock,
+  ExternalLink,
+} from "lucide-react";
+
+// Helper function to get initials from name
+function getInitials(name: string | null): string {
+  if (!name) return "U";
+  return name
+    .split(" ")
+    .map((word) => word.charAt(0))
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+}
 
 export default function UserDashboardPage() {
+  const { name, role } = useUserStore((state) => state);
+  const uniName = useGeneralStore((state) => state.affiliatedUni);
+
   const getStatusBadge = (status: string) => {
     const statusConfig = {
       published: { color: "bg-green-100 text-green-800", label: "Published" },
@@ -45,10 +40,17 @@ export default function UserDashboardPage() {
         color: "bg-blue-100 text-blue-800",
         label: "Under Review",
       },
+      pending_plagiarism: {
+        color: "bg-yellow-100 text-yellow-800",
+        label: "Plagiarism Check",
+      },
+      pending_doi: {
+        color: "bg-purple-100 text-purple-800",
+        label: "Pending DOI",
+      },
       draft: { color: "bg-gray-100 text-gray-800", label: "Draft" },
       rejected: { color: "bg-red-100 text-red-800", label: "Rejected" },
     };
-
     const config =
       statusConfig[status as keyof typeof statusConfig] || statusConfig.draft;
     return (
@@ -60,42 +62,76 @@ export default function UserDashboardPage() {
     );
   };
 
+  const userDocuments = [
+    {
+      id: "1",
+      title:
+        "Machine Learning Applications in Agricultural Yield Prediction for Rwanda",
+      type: "Master's Thesis",
+      status: "published",
+      submissionDate: "2024-05-10",
+      publishedDate: "2024-05-20",
+      doi: "10.12345/ur.thesis.2024.001",
+      downloads: 245,
+      views: 1089,
+      lastUpdated: "2024-05-20",
+    },
+    {
+      id: "2",
+      title: "Deep Learning Frameworks for Natural Language Processing",
+      type: "Research Article",
+      status: "under_review",
+      submissionDate: "2024-06-01",
+      publishedDate: null,
+      doi: null,
+      downloads: 89,
+      views: 456,
+      lastUpdated: "2024-05-18",
+    },
+    {
+      id: "3",
+      title: "Sustainable Water Management Systems in Urban Rwanda",
+      type: "Conference Paper",
+      status: "draft",
+      submissionDate: null,
+      publishedDate: null,
+      doi: null,
+      downloads: 0,
+      views: 12,
+      lastUpdated: "2024-05-15",
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white border-b shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <Link href="/demo/alu" className="flex items-center space-x-3">
-              <div className="h-10 w-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">
-                ALU
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">
-                  African Leadership University
-                </h1>
-                <p className="text-sm text-gray-600">My Dashboard</p>
-              </div>
-            </Link>
-            <nav className="flex items-center space-x-4">
+            <div className="flex items-center space-x-4">
               <Link
-                href="/demo/alu/search"
-                className="text-gray-600 hover:text-blue-600"
+                href={`/demo/${uniName?.subdomain || "alu"}`}
+                className="flex items-center space-x-3 hover:opacity-80 transition"
               >
-                Browse
+                <div className="h-10 w-10 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">
+                  {uniName?.subdomain?.toUpperCase() || "ALU"}
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold text-gray-900">
+                    {uniName?.universityName || "African Leadership University"}
+                  </h1>
+                  <p className="text-sm text-gray-600">Document Repository</p>
+                </div>
               </Link>
+            </div>
+            <nav className="flex items-center space-x-6">
               <Link
-                href="/demo/alu"
-                className="text-gray-600 hover:text-blue-600"
+                href={`/demo/${uniName?.subdomain || "alu"}`}
+                className="text-gray-600 hover:text-gray-900 transition"
               >
                 Home
               </Link>
-              <div className="flex items-center space-x-2">
-                <div className="h-8 w-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium">
-                  MU
-                </div>
-                <span className="text-sm text-gray-700">Marie Uwimana</span>
-              </div>
+              <UserAvatar size="md" showName={true} />
             </nav>
           </div>
         </div>
@@ -108,7 +144,7 @@ export default function UserDashboardPage() {
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-2xl font-bold text-gray-900">
-                  Welcome back, Marie!
+                  Welcome back, {name?.split(" ")[0] || "User"}!
                 </h2>
                 <p className="text-gray-600">
                   Manage your research documents and track their progress
@@ -116,9 +152,10 @@ export default function UserDashboardPage() {
               </div>
               <Link
                 href="/demo/alu/user/upload"
-                className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition font-medium"
+                className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition font-medium flex items-center space-x-2"
               >
-                📤 Upload New Document
+                <Upload className="h-5 w-5" />
+                <span>Upload New Document</span>
               </Link>
             </div>
           </div>
@@ -135,7 +172,7 @@ export default function UserDashboardPage() {
                     {userDocuments.length}
                   </p>
                 </div>
-                <div className="text-2xl">📄</div>
+                <FileText className="h-8 w-8 text-blue-600" />
               </div>
             </div>
 
@@ -150,7 +187,7 @@ export default function UserDashboardPage() {
                     }
                   </p>
                 </div>
-                <div className="text-2xl">✅</div>
+                <CheckCircle className="h-8 w-8 text-green-600" />
               </div>
             </div>
 
@@ -164,7 +201,7 @@ export default function UserDashboardPage() {
                     {userDocuments.reduce((sum, doc) => sum + doc.downloads, 0)}
                   </p>
                 </div>
-                <div className="text-2xl">📥</div>
+                <Download className="h-8 w-8 text-blue-600" />
               </div>
             </div>
 
@@ -178,7 +215,7 @@ export default function UserDashboardPage() {
                     {userDocuments.reduce((sum, doc) => sum + doc.views, 0)}
                   </p>
                 </div>
-                <div className="text-2xl">👁️</div>
+                <Eye className="h-8 w-8 text-purple-600" />
               </div>
             </div>
           </div>
@@ -193,7 +230,7 @@ export default function UserDashboardPage() {
                 href="/demo/alu/user/upload"
                 className="flex items-center p-4 border border-blue-200 rounded-lg hover:bg-blue-50 transition"
               >
-                <div className="text-blue-600 text-2xl mr-4">⬆️</div>
+                <Upload className="h-6 w-6 text-blue-600 mr-4" />
                 <div>
                   <h4 className="font-medium text-gray-900">Upload Document</h4>
                   <p className="text-sm text-gray-600">
@@ -206,7 +243,7 @@ export default function UserDashboardPage() {
                 href="/demo/alu/user/documents"
                 className="flex items-center p-4 border border-green-200 rounded-lg hover:bg-green-50 transition"
               >
-                <div className="text-green-600 text-2xl mr-4">📄</div>
+                <FileText className="h-6 w-6 text-green-600 mr-4" />
                 <div>
                   <h4 className="font-medium text-gray-900">My Documents</h4>
                   <p className="text-sm text-gray-600">
@@ -219,7 +256,7 @@ export default function UserDashboardPage() {
                 href="/demo/alu/user/reviews"
                 className="flex items-center p-4 border border-purple-200 rounded-lg hover:bg-purple-50 transition"
               >
-                <div className="text-purple-600 text-2xl mr-4">📝</div>
+                <CheckCircle className="h-6 w-6 text-purple-600 mr-4" />
                 <div>
                   <h4 className="font-medium text-gray-900">Review Tasks</h4>
                   <p className="text-sm text-gray-600">
@@ -232,7 +269,7 @@ export default function UserDashboardPage() {
                 href="/demo/alu/search"
                 className="flex items-center p-4 border border-blue-200 rounded-lg hover:bg-blue-50 transition"
               >
-                <div className="text-blue-600 text-2xl mr-4">🔍</div>
+                <Search className="h-6 w-6 text-blue-600 mr-4" />
                 <div>
                   <h4 className="font-medium text-gray-900">
                     Browse Repository
@@ -247,7 +284,7 @@ export default function UserDashboardPage() {
                 href="/demo/alu/profile"
                 className="flex items-center p-4 border border-orange-200 rounded-lg hover:bg-orange-50 transition"
               >
-                <div className="text-orange-600 text-2xl mr-4">👤</div>
+                <User className="h-6 w-6 text-orange-600 mr-4" />
                 <div>
                   <h4 className="font-medium text-gray-900">Edit Profile</h4>
                   <p className="text-sm text-gray-600">
@@ -267,9 +304,10 @@ export default function UserDashboardPage() {
                 </h3>
                 <Link
                   href="/demo/alu/user/upload"
-                  className="text-blue-600 hover:text-blue-800 font-medium text-sm"
+                  className="text-blue-600 hover:text-blue-800 font-medium text-sm flex items-center space-x-1"
                 >
-                  + Upload New
+                  <Plus className="h-4 w-4" />
+                  <span>Upload New</span>
                 </Link>
               </div>
             </div>
@@ -330,8 +368,14 @@ export default function UserDashboardPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm space-y-1">
-                          <div>📥 {doc.downloads} downloads</div>
-                          <div>👁️ {doc.views} views</div>
+                          <div className="flex items-center space-x-1">
+                            <Download className="h-4 w-4 text-blue-600" />
+                            <span>{doc.downloads} downloads</span>
+                          </div>
+                          <div className="flex items-center space-x-1">
+                            <Eye className="h-4 w-4 text-purple-600" />
+                            <span>{doc.views} views</span>
+                          </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">

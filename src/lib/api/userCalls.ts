@@ -1,6 +1,16 @@
 import axios from "axios";
 import { createClient } from "@/lib/supabase/client";
 
+export interface UserProfileCreate {
+  email: string;
+  first_name: string;
+  last_name?: string;
+  role: string;
+  tenant_id: string;
+  faculty_id?: string;
+  department_id?: string;
+}
+
 export interface BulkUserImportResult {
   email: string;
   status: "success" | "error";
@@ -155,6 +165,31 @@ export async function adminCreateUser(user: {
     { headers: { Authorization: `Bearer ${token}` } }
   );
   return res.data;
+}
+
+export async function createUserProfile(userData: UserProfileCreate) {
+  const supabase = createClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  const token = session?.access_token;
+
+  if (!token) {
+    throw new Error("Authentication required");
+  }
+
+  const response = await axios.post(
+    "http://127.0.0.1:8000/api/v1/users/",
+    userData,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  return response.data;
 }
 
 function mapApiToUser(api: any): User {

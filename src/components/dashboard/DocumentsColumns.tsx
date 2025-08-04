@@ -27,26 +27,10 @@ import {
   DialogFooter,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { DocumentDetail } from "@/lib/documentTypes";
 
-// Document type
-export type Document = {
-  id: string;
-  title: string;
-  author: string;
-  faculty: string;
-  department: string;
-  type: string;
-  status: string;
-  accessRights: string;
-  submissionDate: string;
-  publishedDate: string | null;
-  doi: string | null;
-  downloads: number;
-  views: number;
-  fileSize: string;
-  plagiarismScore: number | null;
-  reviewStatus: string;
-};
+// Document type - updated to match backend structure
+export type Document = DocumentDetail;
 
 // Helper badge functions (copy from your page or import)
 function getStatusBadge(status: string) {
@@ -133,7 +117,9 @@ export const documentColumns: ColumnDef<Document>[] = [
   },
   {
     accessorFn: (doc) =>
-      `${doc.title} ${doc.author} ${doc.faculty} ${doc.type}`,
+      `${doc.document.title} ${doc.document.author} ${
+        doc.faculty?.name || ""
+      } Document`,
     id: "document",
     header: "Document",
     enableGlobalFilter: true,
@@ -147,18 +133,27 @@ export const documentColumns: ColumnDef<Document>[] = [
       return (
         <div className="max-w-md">
           <Link
-            href={`/demo/alu/documents/${doc.id}`}
+            href={`/demo/alu/documents/${doc.document.document_id}`}
             className="text-sm font-medium text-blue-600 hover:text-blue-800 line-clamp-2 break-words"
           >
-            {doc.title}
+            {doc.document.title}
           </Link>
           <div className="text-sm text-gray-500 mt-1">
-            by {doc.author} • {doc.faculty} • {doc.type}
+            by {doc.document.author} • {doc.faculty?.name || "Unknown"} •
+            Document
           </div>
           <div className="flex items-center space-x-2 mt-2">
-            {getAccessBadge(doc.accessRights)}
-            {doc.doi && (
-              <span className="text-xs text-blue-600">DOI: {doc.doi}</span>
+            {getAccessBadge(
+              doc.document.is_public
+                ? doc.document.is_read_only
+                  ? "restricted"
+                  : "open_access"
+                : "private"
+            )}
+            {doc.document.doi_link && (
+              <span className="text-xs text-blue-600">
+                DOI: {doc.document.doi_link}
+              </span>
             )}
           </div>
         </div>
@@ -167,32 +162,35 @@ export const documentColumns: ColumnDef<Document>[] = [
     size: 220,
   },
   {
-    accessorKey: "status",
+    accessorKey: "document.status",
     header: "Status",
     enableGlobalFilter: true,
     cell: ({ row }) => {
       const doc = row.original;
       return (
         <div className="space-y-1 mr-5">
-          {getStatusBadge(doc.status)}
+          {getStatusBadge(doc.document.status)}
           <div className="text-xs text-gray-500">
-            Submitted: {doc.submissionDate}
+            Submitted: {new Date(doc.document.created_at).toLocaleDateString()}
           </div>
-          {doc.publishedDate && (
-            <div className="text-xs text-gray-500">
-              Published: {doc.publishedDate}
-            </div>
-          )}
+          {doc.document.updated_at &&
+            doc.document.updated_at !== doc.document.created_at && (
+              <div className="text-xs text-gray-500">
+                Updated:{" "}
+                {new Date(doc.document.updated_at).toLocaleDateString()}
+              </div>
+            )}
         </div>
       );
     },
     size: 180,
   },
   {
-    accessorKey: "plagiarismScore",
+    accessorKey: "document.plagiarism_score",
     header: "Plagiarism",
     enableGlobalFilter: false,
-    cell: ({ row }) => getPlagiarismBadge(row.original.plagiarismScore),
+    cell: ({ row }) =>
+      getPlagiarismBadge(row.original.document.plagiarism_score || null),
     size: 100,
   },
   {
@@ -203,9 +201,9 @@ export const documentColumns: ColumnDef<Document>[] = [
       const doc = row.original;
       return (
         <div className="text-sm space-y-1">
-          <div>📥 {doc.downloads} downloads</div>
-          <div>👁️ {doc.views} views</div>
-          <div className="text-xs text-gray-500">{doc.fileSize}</div>
+          <div>📥 {doc.download_count} downloads</div>
+          <div>👁️ {doc.view_count} views</div>
+          <div className="text-xs text-gray-500">File size: N/A</div>
         </div>
       );
     },
@@ -220,7 +218,8 @@ export const documentColumns: ColumnDef<Document>[] = [
       const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
       const queryClient = useQueryClient();
       const deleteMutation = useMutation({
-        mutationFn: async () => documentCalls.deleteDocument(doc.id),
+        mutationFn: async () =>
+          documentCalls.deleteDocument(doc.document.document_id),
         onSuccess: () => {
           toast.success("Document deleted successfully");
           setDeleteDialogOpen(false);
@@ -266,9 +265,9 @@ export const documentColumns: ColumnDef<Document>[] = [
                   Are you sure you want to delete
                   <span
                     className="block font-bold text-gray-900 truncate max-w-xs mt-1"
-                    title={doc.title}
+                    title={doc.document.title}
                   >
-                    {doc.title}
+                    {doc.document.title}
                   </span>
                   This action cannot be undone.
                 </DialogDescription>

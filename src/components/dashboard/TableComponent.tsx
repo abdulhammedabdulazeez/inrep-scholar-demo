@@ -1,6 +1,7 @@
 "use client";
 
-import * as React from "react";
+// import * as React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ColumnDef,
   SortingState,
@@ -64,16 +65,16 @@ export function DataTable<TData, TValue>({
   getRowId,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
     []
   );
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
+  const [rowSelection, setRowSelection] = useState({});
 
   const prevSelectedIdsRef = React.useRef<string[]>([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (onSelectionChange && showSelection) {
       const selectedRowIds = Object.keys(rowSelection).filter(
         (key) => (rowSelection as any)[key]

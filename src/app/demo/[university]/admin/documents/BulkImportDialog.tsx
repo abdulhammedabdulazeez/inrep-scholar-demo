@@ -47,7 +47,25 @@ export default function BulkImportDialog({
   });
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFile(e.target.files?.[0] || null);
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      // Validate file type
+      if (!selectedFile.name.toLowerCase().endsWith(".zip")) {
+        alert("Please select a ZIP file");
+        return;
+      }
+
+      // Validate file size (50MB limit)
+      const maxSize = 50 * 1024 * 1024; // 50MB
+      if (selectedFile.size > maxSize) {
+        alert("File size must be less than 50MB");
+        return;
+      }
+
+      setFile(selectedFile);
+    } else {
+      setFile(null);
+    }
   };
 
   const handleImport = () => {
@@ -69,7 +87,7 @@ export default function BulkImportDialog({
             Upload a ZIP file containing a CSV file and document files.
             <br />
             <a
-              href="/sample-documents-import.zip"
+              href="/documents-import.zip"
               download
               className="text-blue-600 underline text-sm"
             >
@@ -84,14 +102,27 @@ export default function BulkImportDialog({
           onChange={handleFileChange}
           disabled={isPending}
         />
+        {file && (
+          <div className="text-sm text-gray-600 mt-2">
+            Selected: {file.name} ({(file.size / 1024 / 1024).toFixed(2)} MB)
+          </div>
+        )}
         {isError && (
-          <div className="text-red-600 text-sm mt-2">
-            {mutationError?.message || "Import failed"}
+          <div className="text-red-600 text-sm mt-2 p-3 bg-red-50 rounded border">
+            <strong>Import failed:</strong>
+            <br />
+            {mutationError?.message || "Unknown error occurred"}
+            <br />
+            <span className="text-xs text-gray-600 mt-1 block">
+              Please ensure your ZIP file contains a CSV file and document files
+              as shown in the sample.
+            </span>
           </div>
         )}
         {isSuccess && (
-          <div className="text-green-600 text-sm mt-2">
-            Successfully imported {mutationData?.created} documents.
+          <div className="text-green-600 text-sm mt-2 p-3 bg-green-50 rounded border">
+            <strong>Success!</strong> Successfully imported{" "}
+            {mutationData?.created || 0} documents.
           </div>
         )}
         <DialogFooter>

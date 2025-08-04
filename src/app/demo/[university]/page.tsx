@@ -22,7 +22,17 @@ export default function UniversityRepositoryHome() {
     queryKey: ["tenantInfo", tenantId],
     queryFn: () => fetchTenantInfo(tenantId!),
     enabled: !!tenantId, // Only run if tenantId exists
+    retry: 1, // Only retry once
+    retryDelay: 1000,
   });
+
+  // Handle tenant info errors gracefully
+  useEffect(() => {
+    if (error) {
+      console.warn("Failed to fetch tenant info:", error);
+      // Don't fail the entire page if tenant info fails
+    }
+  }, [error]);
 
   useEffect(() => {
     if (data) setTenantInfo(data);
@@ -87,9 +97,9 @@ export default function UniversityRepositoryHome() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      window.location.href = `/demo/alu/search?q=${encodeURIComponent(
-        searchQuery
-      )}`;
+      window.location.href = `/demo/${
+        uniName?.subdomain
+      }/search?q=${encodeURIComponent(searchQuery)}`;
     }
   };
 
@@ -169,7 +179,7 @@ export default function UniversityRepositoryHome() {
               </p>
             </div>
             <Link
-              href="/demo/alu/search"
+              href={`/demo/${uniName?.subdomain}/search`}
               className="text-blue-600 hover:text-blue-800 font-medium"
             >
               View All →
@@ -209,7 +219,7 @@ export default function UniversityRepositoryHome() {
                   </p>
 
                   <Link
-                    href={`/demo/alu/documents/${thesis.id}`}
+                    href={`/demo/${uniName?.subdomain}/documents/${thesis.id}`}
                     className="text-blue-600 hover:text-blue-800 text-sm font-medium"
                   >
                     Read More →
@@ -230,7 +240,7 @@ export default function UniversityRepositoryHome() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Link
-              href="/demo/alu/search?faculty=engineering"
+              href={`/demo/${uniName?.subdomain}/search?faculty=engineering`}
               className="bg-white p-6 rounded-lg shadow hover:shadow-md transition text-center"
             >
               <div className="text-3xl mb-3">⚙️</div>
@@ -306,7 +316,7 @@ export default function UniversityRepositoryHome() {
               <ul className="space-y-2 text-gray-600 text-sm">
                 <li>
                   <Link
-                    href="/demo/alu/search?type=thesis"
+                    href={`/demo/${uniName?.subdomain}/search?type=thesis`}
                     className="hover:text-blue-600"
                   >
                     Theses
@@ -314,7 +324,7 @@ export default function UniversityRepositoryHome() {
                 </li>
                 <li>
                   <Link
-                    href="/demo/alu/search?type=article"
+                    href={`/demo/${uniName?.subdomain}/search?type=article`}
                     className="hover:text-blue-600"
                   >
                     Articles
@@ -322,14 +332,17 @@ export default function UniversityRepositoryHome() {
                 </li>
                 <li>
                   <Link
-                    href="/demo/alu/search?type=dissertation"
+                    href={`/demo/${uniName?.subdomain}/search?type=dissertation`}
                     className="hover:text-blue-600"
                   >
                     Dissertations
                   </Link>
                 </li>
                 <li>
-                  <Link href="/demo/alu/search" className="hover:text-blue-600">
+                  <Link
+                    href={`/demo/${uniName?.subdomain}/search`}
+                    className="hover:text-blue-600"
+                  >
                     All Documents
                   </Link>
                 </li>
@@ -341,7 +354,7 @@ export default function UniversityRepositoryHome() {
               <ul className="space-y-2 text-gray-600 text-sm">
                 <li>
                   <Link
-                    href="/demo/alu/collaboration"
+                    href={`/demo/${uniName?.subdomain}/collaboration`}
                     className="hover:text-blue-600"
                   >
                     Collaboration
@@ -349,7 +362,7 @@ export default function UniversityRepositoryHome() {
                 </li>
                 <li>
                   <Link
-                    href="/demo/alu/newsletter"
+                    href={`/demo/${uniName?.subdomain}/newsletter`}
                     className="hover:text-blue-600"
                   >
                     Newsletter
@@ -421,7 +434,7 @@ export default function UniversityRepositoryHome() {
                 </button>
               </div>
               <Link
-                href="/demo/alu/user"
+                href={`/demo/${uniName?.subdomain}/user`}
                 className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition block text-center"
               >
                 Log In
@@ -429,75 +442,6 @@ export default function UniversityRepositoryHome() {
             </form>
             <button
               onClick={() => setShowLoginModal(false)}
-              className="mt-4 text-gray-500 hover:text-gray-700 text-sm block mx-auto"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Signup Modal */}
-      {showSignupModal && (
-        <div
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-          onClick={() => setShowSignupModal(false)}
-        >
-          <div
-            className="bg-white p-8 rounded-lg w-full max-w-md"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h3 className="text-xl font-bold text-gray-900 mb-4">
-              Create Your Account
-            </h3>
-            <form className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  className="w-full border border-gray-300 px-3 py-2 rounded-md"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  className="w-full border border-gray-300 px-3 py-2 rounded-md"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Faculty
-                </label>
-                <select className="w-full border border-gray-300 px-3 py-2 rounded-md">
-                  <option>Select Faculty</option>
-                  <option>Engineering</option>
-                  <option>Science</option>
-                  <option>Medicine</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  className="w-full border border-gray-300 px-3 py-2 rounded-md"
-                />
-              </div>
-              <Link
-                href="/demo/alu/user"
-                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition block text-center"
-              >
-                Sign Up
-              </Link>
-            </form>
-            <button
-              onClick={() => setShowSignupModal(false)}
               className="mt-4 text-gray-500 hover:text-gray-700 text-sm block mx-auto"
             >
               Cancel

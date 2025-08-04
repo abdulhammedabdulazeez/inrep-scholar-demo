@@ -39,7 +39,7 @@ export default function AdminDocumentsTableClient() {
         columns={documentColumns}
         data={documents}
         onSelectionChange={setSelectedDocuments}
-        getRowId={(row) => row.id}
+        getRowId={(row) => row.document.document_id}
         showSelection={true}
       />
       {/* <BulkActionsBar

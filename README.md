@@ -54,10 +54,10 @@ bun dev
 
 ### Access the Demo
 
-- **Repository Home**: http://localhost:3000/demo/alu
+- **Repository Home**: http://localhost:3000/demo/alu 
 - **Admin Dashboard**: http://localhost:3000/demo/alu/admin
 - **User Dashboard**: http://localhost:3000/demo/alu/user
-- **Global Platform**: http://localhost:3000
+- **Global Platform**: http://localhost:3000 or https://inrep-scholar-demo.vercel.app/
 
 ## 🏗️ Project Structure
 
@@ -135,6 +135,9 @@ NEXT_PUBLIC_ENABLE_SCHOLAR_AI=true
 
 ### Deployment
 Deployed on vercel - inrep-scholar-demo.vercel.app/
+Pilot Testing (ALU ADMIN LOGIN Details) -
+    mail - alu@admin.com
+    password - Password12
 
 
 ## 📄 License

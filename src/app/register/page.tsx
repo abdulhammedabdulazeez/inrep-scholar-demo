@@ -561,7 +561,7 @@ export default function TenantRegistrationPage() {
                               </Link>{" "}
                               and{" "}
                               <Link
-                                href="/privacy"
+                                href="/privacy-policy"
                                 className="text-blue-600 hover:text-blue-800"
                               >
                                 Privacy Policy

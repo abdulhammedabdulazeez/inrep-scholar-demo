@@ -17,6 +17,7 @@ import { AffiliatedUni, useGeneralStore } from "@/store/generalStore";
 import Link from "next/link";
 import React from "react";
 import { usePathname } from "next/navigation";
+import ScholarChat from "@/components/chat/ScholarChat";
 // Lucide icons
 import {
   LayoutDashboard,
@@ -108,6 +109,9 @@ export default function AdminLayout({
           {children}
         </div>
       </main>
+      
+      {/* Scholar AI Chat - Available on all admin pages */}
+      <ScholarChat />
     </SidebarProvider>
   );
 

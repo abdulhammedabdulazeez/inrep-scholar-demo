@@ -26,16 +26,15 @@ export default function LoginPage() {
     handleSubmit,
     setError,
     formState: { errors, isSubmitting },
-  } = useForm<FormFields>(
-    {
-      // defaultValues: {
-      //   email: "myname@gmail.com",
-      // },
-      resolver: zodResolver(formSchema),
-    }
-  );
+  } = useForm<FormFields>({
+    // defaultValues: {
+    //   email: "myname@gmail.com",
+    // },
+    resolver: zodResolver(formSchema),
+  });
 
   const router = useRouter();
+  const affiliatedUni = useGeneralStore((state) => state.affiliatedUni);
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     try {
@@ -140,9 +139,7 @@ export default function LoginPage() {
             {isSubmitting ? "Signing in..." : "Sign In"}
           </button>
           {errors.root && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.root.message}
-            </p>
+            <p className="text-red-500 text-sm mt-1">{errors.root.message}</p>
           )}
         </form>
 
@@ -150,7 +147,7 @@ export default function LoginPage() {
           <p className="text-sm text-gray-600">
             Don&apos;t have an account?{" "}
             <Link
-              href="/auth/register"
+              href={`/demo/${affiliatedUni?.subdomain || "alu"}/register`}
               className="text-blue-600 hover:underline font-medium"
             >
               Sign up

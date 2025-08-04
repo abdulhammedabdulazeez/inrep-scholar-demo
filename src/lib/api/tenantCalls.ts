@@ -54,19 +54,40 @@ export interface University {
 
 export const fetchUniversities = async (): Promise<University[]> => {
   try {
+    console.log("Fetching universities from API...");
     const response = await axios.get(
-      "http://127.0.0.1:8000/api/v1/tenant/public/"
+      "http://127.0.0.1:8000/api/v1/tenant/public"
     );
+    console.log("Universities API response:", response.data);
+    console.log("Response status:", response.status);
+    console.log("Response headers:", response.headers);
+
+    // Check if response.data is an array
+    if (!Array.isArray(response.data)) {
+      console.error("API response is not an array:", typeof response.data);
+      return [];
+    }
+
     // Map all fields from backend to camelCase
-    return response.data.map((uni: any) => ({
-      tenantId: uni.tenant_id,
-      universityName: uni.university_name,
-      subdomain: uni.subdomain,
-      description: uni.description,
-      contactEmail: uni.contact_email,
-    }));
-  } catch (error) {
-    throw error;
+    const universities = response.data.map((uni: any) => {
+      console.log("Processing university:", uni);
+      return {
+        tenantId: uni.tenant_id,
+        universityName: uni.university_name,
+        subdomain: uni.subdomain,
+        description: uni.description,
+        contactEmail: uni.contact_email,
+      };
+    });
+
+    console.log("Mapped universities:", universities);
+    return universities;
+  } catch (error: any) {
+    console.error("Error fetching universities:", error);
+    console.error("Error response:", error.response?.data);
+    console.error("Error status:", error.response?.status);
+    // Return empty array on error, let the fallback handle it
+    return [];
   }
 };
 
@@ -115,4 +136,45 @@ export const updateTenantSettings = async (
     }
   );
   return response.data;
+};
+
+export interface Faculty {
+  faculty_id: string;
+  name: string;
+  description?: string;
+}
+
+export interface Department {
+  department_id: string;
+  name: string;
+  faculty_id: string;
+  description?: string;
+}
+
+export const fetchFaculties = async (): Promise<Faculty[]> => {
+  try {
+    const response = await axios.get(
+      "http://127.0.0.1:8000/api/v1/tenant/faculties"
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching faculties:", error);
+    return [];
+  }
+};
+
+export const fetchDepartments = async (
+  facultyId?: string
+): Promise<Department[]> => {
+  try {
+    const url = facultyId
+      ? `http://127.0.0.1:8000/api/v1/tenant/faculties/${facultyId}/departments`
+      : "http://127.0.0.1:8000/api/v1/tenant/departments";
+
+    const response = await axios.get(url);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching departments:", error);
+    return [];
+  }
 };

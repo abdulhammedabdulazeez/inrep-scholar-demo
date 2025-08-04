@@ -6,7 +6,7 @@ const supabase = createClient();
 
 export async function fetchTenantDocuments(tenantId: string) {
   const res = await axios.get(
-    `http://127.0.0.1:8000/api/v1/document/tenant/${tenantId}`
+    `https://inrep-scholar-backend.onrender.com/api/v1/document/tenant/${tenantId}`
   );
   const data: DocumentListResponse = res.data;
   return data.results; // Return just the results array for backward compatibility
@@ -23,7 +23,7 @@ export async function fetchDocumentDetails(documentId: string) {
   }
 
   const response = await axios.get(
-    `http://127.0.0.1:8000/api/v1/document/${documentId}/details`,
+    `https://inrep-scholar-backend.onrender.com/api/v1/document/${documentId}/details`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -58,7 +58,7 @@ export async function bulkImportDocuments(tenantId: string, file: File) {
 
   try {
     const response = await axios.post(
-      `http://127.0.0.1:8000/api/v1/document/tenant/${tenantId}/import`,
+      `https://inrep-scholar-backend.onrender.com/api/v1/document/tenant/${tenantId}/import`,
       formData,
       {
         headers: {
@@ -97,7 +97,7 @@ export async function exportDocuments(tenantId: string): Promise<Blob> {
   const token = session?.access_token;
 
   const response = await axios.get(
-    `http://127.0.0.1:8000/api/v1/document/tenant/${tenantId}/export`,
+    `https://inrep-scholar-backend.onrender.com/api/v1/document/tenant/${tenantId}/export`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -119,7 +119,7 @@ export async function bulkDeleteDocuments(
   const token = session?.access_token;
 
   const response = await axios.post(
-    `http://127.0.0.1:8000/api/v1/document/tenant/${tenantId}/bulk-delete`,
+    `https://inrep-scholar-backend.onrender.com/api/v1/document/tenant/${tenantId}/bulk-delete`,
     { document_ids: documentIds },
     {
       headers: {
@@ -141,7 +141,7 @@ export async function bulkUpdateDocumentAccess(
   const token = session?.access_token;
 
   const response = await axios.post(
-    `http://127.0.0.1:8000/api/v1/document/tenant/${tenantId}/bulk-access`,
+    `https://inrep-scholar-backend.onrender.com/api/v1/document/tenant/${tenantId}/bulk-access`,
     { document_ids: documentIds, access },
     {
       headers: {
@@ -163,7 +163,7 @@ export async function bulkAssignDocumentsToCollections(
   const token = session?.access_token;
 
   const response = await axios.post(
-    `http://127.0.0.1:8000/api/v1/document/tenant/${tenantId}/bulk-assign-collections`,
+    `https://inrep-scholar-backend.onrender.com/api/v1/document/tenant/${tenantId}/bulk-assign-collections`,
     { document_ids: documentIds, collection_ids: collectionIds },
     {
       headers: {
@@ -181,7 +181,7 @@ export async function updateDocument(documentId: string, data: any) {
   const token = session?.access_token;
 
   const response = await axios.put(
-    `http://127.0.0.1:8000/api/v1/document/${documentId}`,
+    `https://inrep-scholar-backend.onrender.com/api/v1/document/${documentId}`,
     data,
     {
       headers: {
@@ -203,7 +203,7 @@ export async function deleteDocument(documentId: string) {
   }
 
   const response = await axios.delete(
-    `http://127.0.0.1:8000/api/v1/document/${documentId}`,
+    `https://inrep-scholar-backend.onrender.com/api/v1/document/${documentId}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -246,7 +246,10 @@ export async function uploadDocument(
   }
 
   console.log("=== API CALL DETAILS ===");
-  console.log("Endpoint:", "http://127.0.0.1:8000/api/v1/document/");
+  console.log(
+    "Endpoint:",
+    "https://inrep-scholar-backend.onrender.com/api/v1/document/"
+  );
   console.log("Token present:", !!token);
   console.log("Token length:", token?.length);
 
@@ -259,7 +262,7 @@ export async function uploadDocument(
 
   try {
     const response = await axios.post(
-      "http://127.0.0.1:8000/api/v1/document/",
+      "https://inrep-scholar-backend.onrender.com/api/v1/document/",
       formData,
       {
         headers: {

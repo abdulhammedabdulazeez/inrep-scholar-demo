@@ -149,3 +149,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 InRep Scholar is designed specifically for African universities to manage their institutional research outputs. The platform addresses the unique challenges of low-resource environments while providing world-class repository functionality.
 
 **Built for African universities, by African technologists.**
+# Fix: Add missing @radix-ui/react-label dependency

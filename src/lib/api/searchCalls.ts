@@ -62,7 +62,7 @@ export async function searchDocuments(
   // Sorting will be handled on the frontend if needed
 
   const response = await axios.get(
-    `http://127.0.0.1:8000/api/v1/document/tenant/${tenantId}?${params.toString()}`,
+    `https://inrep-scholar-backend.onrender.com/api/v1/document/tenant/${tenantId}?${params.toString()}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

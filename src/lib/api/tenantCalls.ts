@@ -26,7 +26,7 @@ export const registerTenant = async (
 
   try {
     const response = await axios.post(
-      "http://127.0.0.1:8000/api/v1/tenant/",
+      "https://inrep-scholar-backend.onrender.com/api/v1/tenant/",
       formData,
       {
         headers: {
@@ -56,7 +56,7 @@ export const fetchUniversities = async (): Promise<University[]> => {
   try {
     console.log("Fetching universities from API...");
     const response = await axios.get(
-      "http://127.0.0.1:8000/api/v1/tenant/public"
+      "https://inrep-scholar-backend.onrender.com/api/v1/tenant/public"
     );
     console.log("Universities API response:", response.data);
     console.log("Response status:", response.status);
@@ -93,7 +93,7 @@ export const fetchUniversities = async (): Promise<University[]> => {
 
 export async function fetchTenantInfo(tenantId: string) {
   const res = await axios.get(
-    `http://127.0.0.1:8000/api/v1/tenant/${tenantId}/info`
+    `https://inrep-scholar-backend.onrender.com/api/v1/tenant/${tenantId}/info`
   );
   return res.data;
 }
@@ -154,7 +154,7 @@ export interface Department {
 export const fetchFaculties = async (): Promise<Faculty[]> => {
   try {
     const response = await axios.get(
-      "http://127.0.0.1:8000/api/v1/tenant/faculties"
+      "https://inrep-scholar-backend.onrender.com/api/v1/tenant/faculties"
     );
     return response.data;
   } catch (error) {
@@ -168,8 +168,8 @@ export const fetchDepartments = async (
 ): Promise<Department[]> => {
   try {
     const url = facultyId
-      ? `http://127.0.0.1:8000/api/v1/tenant/faculties/${facultyId}/departments`
-      : "http://127.0.0.1:8000/api/v1/tenant/departments";
+      ? `https://inrep-scholar-backend.onrender.com/api/v1/tenant/faculties/${facultyId}/departments`
+: "https://inrep-scholar-backend.onrender.com/api/v1/tenant/departments";
 
     const response = await axios.get(url);
     return response.data;

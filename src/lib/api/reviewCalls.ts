@@ -77,7 +77,7 @@ export async function fetchPendingReviews(
   if (!token) throw new Error("No access token");
 
   const res = await axios.get(
-    `http://127.0.0.1:8000/api/v1/reviews/tenant/${tenantId}/awaiting-review-assignment`,
+    `https://inrep-scholar-backend.onrender.com/api/v1/reviews/tenant/${tenantId}/awaiting-review-assignment`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -98,7 +98,7 @@ export async function fetchReviewers(tenantId: string): Promise<Reviewer[]> {
 
   try {
     const res = await axios.get(
-      `http://127.0.0.1:8000/api/v1/reviews/tenant/${tenantId}/reviewers`,
+      `https://inrep-scholar-backend.onrender.com/api/v1/reviews/tenant/${tenantId}/reviewers`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -216,7 +216,7 @@ export async function assignReviewer(
   if (!token) throw new Error("No access token");
 
   await axios.post(
-    `http://127.0.0.1:8000/api/v1/reviews/`,
+    `https://inrep-scholar-backend.onrender.com/api/v1/reviews/`,
     {
       document_id: assignment.documentId,
       reviewer_id: assignment.reviewerId,

@@ -44,7 +44,7 @@ export async function bulkImportUsers(
   formData.append("file", file);
 
   const res = await axios.post(
-    `http://127.0.0.1:8000/api/v1/users/import-csv`,
+    `https://inrep-scholar-backend.onrender.com/api/v1/users/import-csv`,
     formData,
     {
       headers: {
@@ -65,12 +65,15 @@ export async function exportUsers(): Promise<Blob> {
   const token = session?.access_token;
   if (!token) throw new Error("No access token");
 
-  const res = await axios.get(`http://127.0.0.1:8000/api/v1/users/export-csv`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    responseType: "blob",
-  });
+  const res = await axios.get(
+    `https://inrep-scholar-backend.onrender.com/api/v1/users/export-csv`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      responseType: "blob",
+    }
+  );
 
   return res.data;
 }
@@ -83,11 +86,14 @@ export async function fetchUsers(): Promise<User[]> {
   const token = session?.access_token;
   if (!token) throw new Error("No access token");
 
-  const res = await axios.get(`http://127.0.0.1:8000/api/v1/users/`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const res = await axios.get(
+    `https://inrep-scholar-backend.onrender.com/api/v1/users/`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 
   return Array.isArray(res.data) ? res.data.map(mapApiToUser) : [];
 }
@@ -104,7 +110,7 @@ export async function bulkUpdateUserRoles(
   if (!token) throw new Error("No access token");
 
   const res = await axios.post(
-    "http://127.0.0.1:8000/api/v1/users/bulk-update-role",
+    "https://inrep-scholar-backend.onrender.com/api/v1/users/bulk-update-role",
     { user_ids: userIds, new_role: newRole },
     { headers: { Authorization: `Bearer ${token}` } }
   );
@@ -122,7 +128,7 @@ export async function bulkDeleteUsers(
   if (!token) throw new Error("No access token");
 
   const res = await axios.post(
-    "http://127.0.0.1:8000/api/v1/users/bulk-delete",
+    "https://inrep-scholar-backend.onrender.com/api/v1/users/bulk-delete",
     { user_ids: userIds },
     { headers: { Authorization: `Bearer ${token}` } }
   );
@@ -138,7 +144,7 @@ export async function deleteUser(userId: string): Promise<{ detail: string }> {
   if (!token) throw new Error("No access token");
 
   const res = await axios.delete(
-    `http://127.0.0.1:8000/api/v1/users/${userId}`,
+    `https://inrep-scholar-backend.onrender.com/api/v1/users/${userId}`,
     { headers: { Authorization: `Bearer ${token}` } }
   );
   return res.data;
@@ -160,7 +166,7 @@ export async function adminCreateUser(user: {
   if (!token) throw new Error("No access token");
 
   const res = await axios.post(
-    "http://127.0.0.1:8000/api/v1/users/admin-create",
+    "https://inrep-scholar-backend.onrender.com/api/v1/users/admin-create",
     user,
     { headers: { Authorization: `Bearer ${token}` } }
   );
@@ -179,7 +185,7 @@ export async function createUserProfile(userData: UserProfileCreate) {
   }
 
   const response = await axios.post(
-    "http://127.0.0.1:8000/api/v1/users/",
+    "https://inrep-scholar-backend.onrender.com/api/v1/users/",
     userData,
     {
       headers: {

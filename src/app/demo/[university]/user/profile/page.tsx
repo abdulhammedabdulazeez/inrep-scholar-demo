@@ -176,7 +176,6 @@ export default function ProfilePage() {
                   />
                 </div>
               </div>
-              </div>
 
               {/* Save Button */}
               <div className="flex justify-end space-x-4">

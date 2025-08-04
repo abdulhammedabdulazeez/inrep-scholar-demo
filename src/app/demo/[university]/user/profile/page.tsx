@@ -86,96 +86,96 @@ export default function ProfilePage() {
                   />
                 </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Email Address
-                    </label>
-                    <input
-                      type="email"
-                      className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      defaultValue="marie.uwimana@ur.ac.rw"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      ORCID ID
-                    </label>
-                    <input
-                      type="text"
-                      className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      defaultValue="0000-0001-2345-6789"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Phone Number
-                    </label>
-                    <input
-                      type="tel"
-                      className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      defaultValue="+250 788 123 456"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Faculty
-                    </label>
-                    <select className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                      <option value="engineering" selected>
-                        Engineering
-                      </option>
-                      <option value="science">Science</option>
-                      <option value="medicine">Medicine</option>
-                      <option value="agriculture">Agriculture</option>
-                      <option value="business">Business</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Department
-                    </label>
-                    <select className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                      <option value="computer_science" selected>
-                        Computer Science
-                      </option>
-                      <option value="electrical_engineering">
-                        Electrical Engineering
-                      </option>
-                      <option value="mechanical_engineering">
-                        Mechanical Engineering
-                      </option>
-                    </select>
-                  </div>
-
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Academic Level
-                    </label>
-                    <select className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                      <option value="masters" selected>
-                        Master's Student
-                      </option>
-                      <option value="phd">PhD Student</option>
-                      <option value="postdoc">Postdoctoral Researcher</option>
-                      <option value="faculty">Faculty Member</option>
-                    </select>
-                  </div>
-
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Research Interests
-                    </label>
-                    <textarea
-                      className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      rows={4}
-                      defaultValue="Machine learning applications in agriculture, computer vision for crop monitoring, sustainable farming technologies, and AI for food security in developing countries."
-                    />
-                  </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    defaultValue="marie.uwimana@ur.ac.rw"
+                  />
                 </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    ORCID ID
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    defaultValue="0000-0001-2345-6789"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Phone Number
+                  </label>
+                  <input
+                    type="tel"
+                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    defaultValue="+250 788 123 456"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Faculty
+                  </label>
+                  <select className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="engineering" selected>
+                      Engineering
+                    </option>
+                    <option value="science">Science</option>
+                    <option value="medicine">Medicine</option>
+                    <option value="agriculture">Agriculture</option>
+                    <option value="business">Business</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Department
+                  </label>
+                  <select className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="computer_science" selected>
+                      Computer Science
+                    </option>
+                    <option value="electrical_engineering">
+                      Electrical Engineering
+                    </option>
+                    <option value="mechanical_engineering">
+                      Mechanical Engineering
+                    </option>
+                  </select>
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Academic Level
+                  </label>
+                  <select className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="masters" selected>
+                      Master's Student
+                    </option>
+                    <option value="phd">PhD Student</option>
+                    <option value="postdoc">Postdoctoral Researcher</option>
+                    <option value="faculty">Faculty Member</option>
+                  </select>
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Research Interests
+                  </label>
+                  <textarea
+                    className="w-full border border-gray-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    rows={4}
+                    defaultValue="Machine learning applications in agriculture, computer vision for crop monitoring, sustainable farming technologies, and AI for food security in developing countries."
+                  />
+                </div>
+              </div>
               </div>
 
               {/* Save Button */}

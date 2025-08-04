@@ -340,7 +340,7 @@ const mockDocumentDetails: Record<string, DocumentDetail> = {
       is_public: false,
       is_read_only: false,
       doi_link: undefined,
-      plagiarism_score: null,
+      plagiarism_score: undefined,
       created_at: "2024-06-15T00:00:00Z",
       updated_at: "2024-06-15T00:00:00Z",
     },

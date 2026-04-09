@@ -1,6 +1,7 @@
 import axios from "axios";
 import { RegisterUniFormFields } from "../types";
 import { createClient } from "@/lib/supabase/client";
+import { BACKEND_API_URL } from "./config";
 
 const supabase = createClient();
 
@@ -26,7 +27,7 @@ export const registerTenant = async (
 
   try {
     const response = await axios.post(
-      "https://inrep-scholar-backend.onrender.com/api/v1/tenant/",
+      `${BACKEND_API_URL}/tenant/`,
       formData,
       {
         headers: {
@@ -56,7 +57,7 @@ export const fetchUniversities = async (): Promise<University[]> => {
   try {
     console.log("Fetching universities from API...");
     const response = await axios.get(
-      "https://inrep-scholar-backend.onrender.com/api/v1/tenant/public"
+      `${BACKEND_API_URL}/tenant/public`
     );
     console.log("Universities API response:", response.data);
     console.log("Response status:", response.status);
@@ -93,7 +94,7 @@ export const fetchUniversities = async (): Promise<University[]> => {
 
 export async function fetchTenantInfo(tenantId: string) {
   const res = await axios.get(
-    `https://inrep-scholar-backend.onrender.com/api/v1/tenant/${tenantId}/info`
+    `${BACKEND_API_URL}/tenant/${tenantId}/info`
   );
   return res.data;
 }
@@ -126,7 +127,7 @@ export const updateTenantSettings = async (
     console.log(`${key}:`, value);
   }
   const response = await axios.put(
-    `/api/v1/tenant/${tenantId}/settings`,
+    `${BACKEND_API_URL}/tenant/${tenantId}/settings`,
     formData,
     {
       headers: {
@@ -154,7 +155,7 @@ export interface Department {
 export const fetchFaculties = async (): Promise<Faculty[]> => {
   try {
     const response = await axios.get(
-      "https://inrep-scholar-backend.onrender.com/api/v1/tenant/faculties"
+      `${BACKEND_API_URL}/tenant/faculties`
     );
     return response.data;
   } catch (error) {
@@ -168,8 +169,8 @@ export const fetchDepartments = async (
 ): Promise<Department[]> => {
   try {
     const url = facultyId
-      ? `https://inrep-scholar-backend.onrender.com/api/v1/tenant/faculties/${facultyId}/departments`
-: "https://inrep-scholar-backend.onrender.com/api/v1/tenant/departments";
+      ? `${BACKEND_API_URL}/tenant/faculties/${facultyId}/departments`
+: `${BACKEND_API_URL}/tenant/departments`;
 
     const response = await axios.get(url);
     return response.data;

@@ -5,13 +5,17 @@ import { useState, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useUserStore } from "@/store/userStore";
 import { useGeneralStore } from "@/store/generalStore";
-import { useMockDocumentSearch } from "@/hooks/useMockDocumentSearch";
+import { useDocumentSearch } from "@/hooks/useDocumentSearch";
 import { SearchFilters } from "@/lib/api/searchCalls";
 import SearchInput from "@/components/search/SearchInput";
 import FilterSelect from "@/components/search/FilterSelect";
 import Pagination from "@/components/search/Pagination";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  getDocumentAuthorLabel,
+  isExternalDocumentAuthor,
+} from "@/lib/documentAuthor";
 
 // Filter options
 const facultyOptions = [
@@ -23,11 +27,12 @@ const facultyOptions = [
 ];
 
 const documentTypeOptions = [
-  { value: "master's thesis", label: "Master's Thesis" },
-  { value: "phd dissertation", label: "PhD Dissertation" },
-  { value: "research article", label: "Research Article" },
-  { value: "conference paper", label: "Conference Paper" },
-  { value: "book chapter", label: "Book Chapter" },
+  { value: "Undergraduate Thesis", label: "Undergraduate Thesis" },
+  { value: "Master's Thesis", label: "Master's Thesis" },
+  { value: "PhD Dissertation", label: "PhD Dissertation" },
+  { value: "Research Article", label: "Research Article" },
+  { value: "Conference Paper", label: "Conference Paper" },
+  { value: "Book Chapter", label: "Book Chapter" },
 ];
 
 const accessTypeOptions = [
@@ -72,8 +77,9 @@ export default function SearchResultsClient() {
     setFilters((prevFilters) => ({ ...prevFilters, page }));
   }, []);
 
-  // Search query
-  const { data, isLoading, error } = useMockDocumentSearch(filters);
+  const tenantId = uniName?.tenantId;
+
+  const { data, isLoading, error } = useDocumentSearch(tenantId, filters);
 
   // Access control helper
   const canViewFullText = (accessRights: string) => {
@@ -340,7 +346,12 @@ export default function SearchResultsClient() {
 
             {/* Results List */}
             <div className="space-y-6">
-              {isLoading ? (
+              {!tenantId ? (
+                <div className="rounded-md border border-amber-200 bg-amber-50 p-4 text-amber-900">
+                  University context is missing. Open this demo from a
+                  university route so documents can load from the backend.
+                </div>
+              ) : isLoading ? (
                 // Loading skeletons
                 Array.from({ length: 3 }).map((_, index) => (
                   <div
@@ -420,7 +431,13 @@ export default function SearchResultsClient() {
                         </h3>
 
                         <p className="text-gray-600 mb-3">
-                          by <strong>{result.document.author}</strong> •{" "}
+                          by <strong>{getDocumentAuthorLabel(result.document)}</strong>{" "}
+                          {isExternalDocumentAuthor(result.document) && (
+                            <span className="mr-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800">
+                              External
+                            </span>
+                          )}
+                          •{" "}
                           {result.faculty?.name || "Unknown"} •{" "}
                           {result.department?.name || "Unknown"}
                         </p>
@@ -459,29 +476,6 @@ export default function SearchResultsClient() {
                         >
                           View Details
                         </Link>
-                        {canViewFullText(
-                          result.document.is_public
-                            ? result.document.is_read_only
-                              ? "restricted"
-                              : "open_access"
-                            : "private"
-                        ) && (
-                          <Button
-                            size="sm"
-                            className="bg-blue-600 text-white hover:bg-blue-700"
-                          >
-                            📄 View PDF
-                          </Button>
-                        )}
-                        {result.document.is_public &&
-                          !result.document.is_read_only && (
-                            <Button
-                              size="sm"
-                              className="bg-green-600 text-white hover:bg-green-700"
-                            >
-                              ⬇️ Download
-                            </Button>
-                          )}
                       </div>
                     </div>
                   </div>

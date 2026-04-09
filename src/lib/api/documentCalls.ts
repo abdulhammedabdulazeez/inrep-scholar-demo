@@ -1,15 +1,29 @@
 import axios from "axios";
 import { createClient } from "@/lib/supabase/client";
 import { DocumentListResponse, DocumentDetail } from "@/lib/documentTypes";
+import { BACKEND_API_URL } from "./config";
 
 const supabase = createClient();
 
+export async function fetchTenantDocumentsList(
+  tenantId: string,
+  page?: number,
+  pageSize?: number
+): Promise<DocumentListResponse> {
+  const params = new URLSearchParams();
+  if (page != null) params.append("page", String(page));
+  if (pageSize != null) params.append("page_size", String(pageSize));
+  const qs = params.toString();
+  const url = `${BACKEND_API_URL}/document/tenant/${tenantId}${
+    qs ? `?${qs}` : ""
+  }`;
+  const res = await axios.get(url);
+  return res.data as DocumentListResponse;
+}
+
 export async function fetchTenantDocuments(tenantId: string) {
-  const res = await axios.get(
-    `https://inrep-scholar-backend.onrender.com/api/v1/document/tenant/${tenantId}`
-  );
-  const data: DocumentListResponse = res.data;
-  return data.results; // Return just the results array for backward compatibility
+  const data = await fetchTenantDocumentsList(tenantId);
+  return data.results;
 }
 
 export async function fetchDocumentDetails(documentId: string) {
@@ -23,7 +37,7 @@ export async function fetchDocumentDetails(documentId: string) {
   }
 
   const response = await axios.get(
-    `https://inrep-scholar-backend.onrender.com/api/v1/document/${documentId}/details`,
+    `${BACKEND_API_URL}/document/${documentId}/details`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -58,7 +72,7 @@ export async function bulkImportDocuments(tenantId: string, file: File) {
 
   try {
     const response = await axios.post(
-      `https://inrep-scholar-backend.onrender.com/api/v1/document/tenant/${tenantId}/import`,
+      `${BACKEND_API_URL}/document/tenant/${tenantId}/import`,
       formData,
       {
         headers: {
@@ -97,7 +111,7 @@ export async function exportDocuments(tenantId: string): Promise<Blob> {
   const token = session?.access_token;
 
   const response = await axios.get(
-    `https://inrep-scholar-backend.onrender.com/api/v1/document/tenant/${tenantId}/export`,
+    `${BACKEND_API_URL}/document/tenant/${tenantId}/export`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -119,7 +133,7 @@ export async function bulkDeleteDocuments(
   const token = session?.access_token;
 
   const response = await axios.post(
-    `https://inrep-scholar-backend.onrender.com/api/v1/document/tenant/${tenantId}/bulk-delete`,
+    `${BACKEND_API_URL}/document/tenant/${tenantId}/bulk-delete`,
     { document_ids: documentIds },
     {
       headers: {
@@ -141,7 +155,7 @@ export async function bulkUpdateDocumentAccess(
   const token = session?.access_token;
 
   const response = await axios.post(
-    `https://inrep-scholar-backend.onrender.com/api/v1/document/tenant/${tenantId}/bulk-access`,
+    `${BACKEND_API_URL}/document/tenant/${tenantId}/bulk-access`,
     { document_ids: documentIds, access },
     {
       headers: {
@@ -163,7 +177,7 @@ export async function bulkAssignDocumentsToCollections(
   const token = session?.access_token;
 
   const response = await axios.post(
-    `https://inrep-scholar-backend.onrender.com/api/v1/document/tenant/${tenantId}/bulk-assign-collections`,
+    `${BACKEND_API_URL}/document/tenant/${tenantId}/bulk-assign-collections`,
     { document_ids: documentIds, collection_ids: collectionIds },
     {
       headers: {
@@ -181,7 +195,7 @@ export async function updateDocument(documentId: string, data: any) {
   const token = session?.access_token;
 
   const response = await axios.put(
-    `https://inrep-scholar-backend.onrender.com/api/v1/document/${documentId}`,
+    `${BACKEND_API_URL}/document/${documentId}`,
     data,
     {
       headers: {
@@ -203,7 +217,7 @@ export async function deleteDocument(documentId: string) {
   }
 
   const response = await axios.delete(
-    `https://inrep-scholar-backend.onrender.com/api/v1/document/${documentId}`,
+    `${BACKEND_API_URL}/document/${documentId}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -219,6 +233,8 @@ export interface DocumentUploadData {
   faculty_id: string;
   department_id: string;
   author_email: string;
+  author_first_name?: string;
+  author_last_name?: string;
   type?: string;
   abstract?: string;
   is_public?: boolean;
@@ -248,7 +264,7 @@ export async function uploadDocument(
   console.log("=== API CALL DETAILS ===");
   console.log(
     "Endpoint:",
-    "https://inrep-scholar-backend.onrender.com/api/v1/document/"
+    `${BACKEND_API_URL}/document/`
   );
   console.log("Token present:", !!token);
   console.log("Token length:", token?.length);
@@ -262,7 +278,7 @@ export async function uploadDocument(
 
   try {
     const response = await axios.post(
-      "https://inrep-scholar-backend.onrender.com/api/v1/document/",
+      `${BACKEND_API_URL}/document/`,
       formData,
       {
         headers: {
@@ -289,6 +305,11 @@ export async function uploadDocument(
 
     if (error.response?.status === 400) {
       throw new Error(error.response.data?.detail || "Invalid document data");
+    } else if (error.response?.status === 409) {
+      throw new Error(
+        error.response.data?.detail ||
+          "This author email conflicts with an existing user. Please use another email or select an existing user."
+      );
     } else if (error.response?.status === 401) {
       throw new Error("Authentication failed");
     } else if (error.response?.status === 413) {

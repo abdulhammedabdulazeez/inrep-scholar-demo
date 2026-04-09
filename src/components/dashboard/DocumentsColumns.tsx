@@ -18,6 +18,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as documentCalls from "@/lib/api/documentCalls";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useParams } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -28,6 +29,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { DocumentDetail } from "@/lib/documentTypes";
+import {
+  getDocumentAuthorLabel,
+  isExternalDocumentAuthor,
+} from "@/lib/documentAuthor";
 
 // Document type - updated to match backend structure
 export type Document = DocumentDetail;
@@ -93,6 +98,48 @@ function getPlagiarismBadge(score: number | null) {
   }
 }
 
+function DocumentInfoCell({ doc }: { doc: DocumentDetail }) {
+  const params = useParams();
+  const subdomain = (params?.university as string) || "alu";
+  const detailHref = `/demo/${subdomain}/documents/${doc.document.document_id}`;
+
+  return (
+    <div className="flex min-w-0 w-full flex-col gap-1.5">
+      <Link
+        href={detailHref}
+        className="text-sm font-medium leading-snug text-blue-600 hover:text-blue-800 break-words"
+      >
+        {doc.document.title}
+      </Link>
+      <span className="text-xs leading-snug text-gray-700 break-words">
+        {getDocumentAuthorLabel(doc.document)}
+      </span>
+      {isExternalDocumentAuthor(doc.document) && (
+        <span className="w-fit rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-medium text-amber-800">
+          External Author
+        </span>
+      )}
+      <span className="text-xs leading-snug text-gray-500 break-words">
+        {doc.department?.name ?? "—"}
+      </span>
+      <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+        {getAccessBadge(
+          doc.document.is_public
+            ? doc.document.is_read_only
+              ? "restricted"
+              : "open_access"
+            : "private"
+        )}
+        {doc.document.doi_link && (
+          <span className="max-w-full break-all text-[10px] text-blue-600">
+            DOI: {doc.document.doi_link}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export const documentColumns: ColumnDef<Document>[] = [
   {
     id: "select",
@@ -117,9 +164,13 @@ export const documentColumns: ColumnDef<Document>[] = [
   },
   {
     accessorFn: (doc) =>
-      `${doc.document.title} ${doc.document.author} ${
-        doc.faculty?.name || ""
-      } Document`,
+      `${doc.document.title} ${getDocumentAuthorLabel(doc.document)} ${
+        doc.document.author_profile?.email || ""
+      } ${doc.document.author_profile?.first_name || ""} ${
+        doc.document.author_profile?.last_name || ""
+      } ${
+        doc.department?.name || ""
+      } ${doc.faculty?.name || ""}`,
     id: "document",
     header: "Document",
     enableGlobalFilter: true,
@@ -128,38 +179,8 @@ export const documentColumns: ColumnDef<Document>[] = [
       const search = filterValue?.toLowerCase() ?? "";
       return value.toLowerCase().includes(search);
     },
-    cell: ({ row }) => {
-      const doc = row.original;
-      return (
-        <div className="max-w-md">
-          <Link
-            href={`/demo/alu/documents/${doc.document.document_id}`}
-            className="text-sm font-medium text-blue-600 hover:text-blue-800 line-clamp-2 break-words"
-          >
-            {doc.document.title}
-          </Link>
-          <div className="text-sm text-gray-500 mt-1">
-            by {doc.document.author} • {doc.faculty?.name || "Unknown"} •
-            Document
-          </div>
-          <div className="flex items-center space-x-2 mt-2">
-            {getAccessBadge(
-              doc.document.is_public
-                ? doc.document.is_read_only
-                  ? "restricted"
-                  : "open_access"
-                : "private"
-            )}
-            {doc.document.doi_link && (
-              <span className="text-xs text-blue-600">
-                DOI: {doc.document.doi_link}
-              </span>
-            )}
-          </div>
-        </div>
-      );
-    },
-    size: 220,
+    cell: ({ row }) => <DocumentInfoCell doc={row.original} />,
+    size: 280,
   },
   {
     accessorKey: "document.status",

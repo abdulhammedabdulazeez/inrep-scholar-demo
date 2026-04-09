@@ -102,33 +102,51 @@ const statusOptions = [
     description: "Work in progress",
   },
   {
-    value: "under_review",
+    value: "pending review",
     label: "Under Review",
     icon: Eye,
     description: "Being reviewed",
   },
   {
-    value: "published",
-    label: "Published",
+    value: "approved",
+    label: "Approved",
     icon: CheckCircle2,
     description: "Publicly available",
   },
 ];
 
 const documentTypeOptions = [
-  { value: "undergraduate_thesis", label: "Undergraduate Thesis", description: "Bachelor's level research", backendValue: "undergraduate_thesis" },
-  { value: "masters_thesis", label: "Master's Thesis", description: "Master's level research", backendValue: "masters_thesis" },
-  { value: "phd_dissertation", label: "PhD Dissertation", description: "Doctoral level research", backendValue: "phd_dissertation" },
-  { value: "research_paper", label: "Research Paper", description: "Academic research paper", backendValue: "research_paper" },
-  { value: "conference_paper", label: "Conference Paper", description: "Conference presentation", backendValue: "conference_paper" },
-  { value: "journal_article", label: "Journal Article", description: "Published journal article", backendValue: "journal_article" },
+  {
+    value: "Undergraduate Thesis",
+    label: "Undergraduate Thesis",
+    description: "Bachelor's level research",
+  },
+  {
+    value: "Master's Thesis",
+    label: "Master's Thesis",
+    description: "Master's level research",
+  },
+  {
+    value: "PhD Dissertation",
+    label: "PhD Dissertation",
+    description: "Doctoral level research",
+  },
+  {
+    value: "Research Article",
+    label: "Research Article",
+    description: "Academic research paper",
+  },
+  {
+    value: "Conference Paper",
+    label: "Conference Paper",
+    description: "Conference presentation",
+  },
+  {
+    value: "Book Chapter",
+    label: "Book Chapter",
+    description: "A chapter from an academic book",
+  },
 ];
-
-// Helper function to get backend value for document type
-const getBackendDocumentType = (frontendValue: string): string => {
-  const option = documentTypeOptions.find((opt) => opt.value === frontendValue);
-  return option?.backendValue || "undergraduate_thesis";
-};
 
 // Form validation schema
 const uploadSchema = z.object({
@@ -136,12 +154,14 @@ const uploadSchema = z.object({
   faculty_id: z.string().min(1, "Faculty is required"),
   department_id: z.string().min(1, "Department is required"),
   author_email: z.string().email("Please enter a valid email address"),
+  author_first_name: z.string().optional(),
+  author_last_name: z.string().optional(),
   type: z.string(),
   abstract: z.string().optional(),
   is_public: z.boolean(),
   is_read_only: z.boolean(),
   doi_link: z.string().url().optional().or(z.literal("")),
-  status: z.enum(["draft", "under_review", "published"]),
+  status: z.enum(["draft", "pending review", "approved"]),
 });
 
 type UploadFormData = z.infer<typeof uploadSchema>;
@@ -161,7 +181,9 @@ export default function DocumentUploadForm() {
       faculty_id: "",
       department_id: "",
       author_email: "",
-      type: "undergraduate_thesis",
+      author_first_name: "",
+      author_last_name: "",
+      type: "Undergraduate Thesis",
       abstract: "",
       is_public: true,
       is_read_only: false,
@@ -199,12 +221,20 @@ export default function DocumentUploadForm() {
       formData.append("faculty_id", data.faculty_id);
       formData.append("department_id", data.department_id);
       formData.append("author_email", data.author_email);
-      formData.append("type", getBackendDocumentType(data.type));
+      const authorFirstName = data.author_first_name?.trim();
+      const authorLastName = data.author_last_name?.trim();
+      if (authorFirstName) {
+        formData.append("author_first_name", authorFirstName);
+      }
+      if (authorLastName) {
+        formData.append("author_last_name", authorLastName);
+      }
+      formData.append("type", data.type);
 
       // Debug the type conversion
       console.log("=== TYPE CONVERSION DEBUG ===");
       console.log("Frontend type value:", data.type);
-      console.log("Backend type value:", getBackendDocumentType(data.type));
+      console.log("Backend type value:", data.type);
       console.log("=== END TYPE CONVERSION DEBUG ===");
 
       if (data.abstract) {
@@ -484,6 +514,40 @@ export default function DocumentUploadForm() {
                       {form.formState.errors.author_email.message}
                     </p>
                   )}
+                  <p className="mt-2 text-xs text-gray-500">
+                    If this email is not registered, provide a first or last
+                    name so we can create an attribution-only profile.
+                  </p>
+                </div>
+
+                <div>
+                  <Label
+                    htmlFor="author_first_name"
+                    className="text-base font-semibold text-gray-700"
+                  >
+                    Author First Name (Optional)
+                  </Label>
+                  <Input
+                    id="author_first_name"
+                    {...form.register("author_first_name")}
+                    placeholder="Enter author's first name"
+                    className="mt-2 h-12 text-base"
+                  />
+                </div>
+
+                <div>
+                  <Label
+                    htmlFor="author_last_name"
+                    className="text-base font-semibold text-gray-700"
+                  >
+                    Author Last Name (Optional)
+                  </Label>
+                  <Input
+                    id="author_last_name"
+                    {...form.register("author_last_name")}
+                    placeholder="Enter author's last name"
+                    className="mt-2 h-12 text-base"
+                  />
                 </div>
 
                 {/* Document Type */}

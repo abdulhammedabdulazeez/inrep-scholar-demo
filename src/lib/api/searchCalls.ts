@@ -1,6 +1,7 @@
 import axios from "axios";
 import { createClient } from "@/lib/supabase/client";
 import { DocumentListResponse } from "@/lib/documentTypes";
+import { BACKEND_API_URL } from "./config";
 
 const supabase = createClient();
 
@@ -62,7 +63,7 @@ export async function searchDocuments(
   // Sorting will be handled on the frontend if needed
 
   const response = await axios.get(
-    `https://inrep-scholar-backend.onrender.com/api/v1/document/tenant/${tenantId}?${params.toString()}`,
+    `${BACKEND_API_URL}/document/tenant/${tenantId}?${params.toString()}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

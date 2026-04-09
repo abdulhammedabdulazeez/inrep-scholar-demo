@@ -2,9 +2,15 @@
 
 export interface UserProfileRead {
   user_id: string;
-  name: string;
+  role?: string;
   email: string;
-  // ...other fields
+  first_name?: string | null;
+  last_name?: string | null;
+  phone_number?: string | null;
+  tenant_id?: string;
+  faculty_id?: string | null;
+  department_id?: string | null;
+  is_external: boolean;
 }
 
 export interface DepartmentRead {
@@ -56,7 +62,8 @@ export interface DocumentRead {
   plagiarism_score?: number;
   created_at: string;
   updated_at: string;
-  author_profile?: UserProfileRead;
+  author_profile?: UserProfileRead | null;
+  author_display_name?: string | null;
 }
 
 export interface DocumentDetail {

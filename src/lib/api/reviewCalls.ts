@@ -1,5 +1,6 @@
 import axios from "axios";
 import { createClient } from "@/lib/supabase/client";
+import { BACKEND_API_URL } from "./config";
 
 export interface AssignedReviewer {
   fullName: string;
@@ -77,7 +78,7 @@ export async function fetchPendingReviews(
   if (!token) throw new Error("No access token");
 
   const res = await axios.get(
-    `https://inrep-scholar-backend.onrender.com/api/v1/reviews/tenant/${tenantId}/awaiting-review-assignment`,
+    `${BACKEND_API_URL}/reviews/tenant/${tenantId}/awaiting-review-assignment`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -98,7 +99,7 @@ export async function fetchReviewers(tenantId: string): Promise<Reviewer[]> {
 
   try {
     const res = await axios.get(
-      `https://inrep-scholar-backend.onrender.com/api/v1/reviews/tenant/${tenantId}/reviewers`,
+      `${BACKEND_API_URL}/reviews/tenant/${tenantId}/reviewers`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -216,7 +217,7 @@ export async function assignReviewer(
   if (!token) throw new Error("No access token");
 
   await axios.post(
-    `https://inrep-scholar-backend.onrender.com/api/v1/reviews/`,
+    `${BACKEND_API_URL}/reviews/`,
     {
       document_id: assignment.documentId,
       reviewer_id: assignment.reviewerId,

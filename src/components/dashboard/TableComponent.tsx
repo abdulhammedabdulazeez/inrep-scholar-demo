@@ -23,6 +23,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -209,7 +210,14 @@ export function DataTable<TData, TValue>({
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="py-6">
+                    <TableCell
+                      key={cell.id}
+                      className={cn(
+                        "py-6",
+                        cell.column.id === "document" &&
+                          "max-w-[18rem] min-w-0 whitespace-normal align-top sm:max-w-[20rem]"
+                      )}
+                    >
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

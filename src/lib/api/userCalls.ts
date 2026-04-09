@@ -1,5 +1,6 @@
 import axios from "axios";
 import { createClient } from "@/lib/supabase/client";
+import { BACKEND_API_URL } from "./config";
 
 export interface UserProfileCreate {
   email: string;
@@ -44,7 +45,7 @@ export async function bulkImportUsers(
   formData.append("file", file);
 
   const res = await axios.post(
-    `https://inrep-scholar-backend.onrender.com/api/v1/users/import-csv`,
+    `${BACKEND_API_URL}/users/import-csv`,
     formData,
     {
       headers: {
@@ -66,7 +67,7 @@ export async function exportUsers(): Promise<Blob> {
   if (!token) throw new Error("No access token");
 
   const res = await axios.get(
-    `https://inrep-scholar-backend.onrender.com/api/v1/users/export-csv`,
+    `${BACKEND_API_URL}/users/export-csv`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -87,7 +88,7 @@ export async function fetchUsers(): Promise<User[]> {
   if (!token) throw new Error("No access token");
 
   const res = await axios.get(
-    `https://inrep-scholar-backend.onrender.com/api/v1/users/`,
+    `${BACKEND_API_URL}/users/`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -110,7 +111,7 @@ export async function bulkUpdateUserRoles(
   if (!token) throw new Error("No access token");
 
   const res = await axios.post(
-    "https://inrep-scholar-backend.onrender.com/api/v1/users/bulk-update-role",
+    `${BACKEND_API_URL}/users/bulk-update-role`,
     { user_ids: userIds, new_role: newRole },
     { headers: { Authorization: `Bearer ${token}` } }
   );
@@ -128,7 +129,7 @@ export async function bulkDeleteUsers(
   if (!token) throw new Error("No access token");
 
   const res = await axios.post(
-    "https://inrep-scholar-backend.onrender.com/api/v1/users/bulk-delete",
+    `${BACKEND_API_URL}/users/bulk-delete`,
     { user_ids: userIds },
     { headers: { Authorization: `Bearer ${token}` } }
   );
@@ -144,7 +145,7 @@ export async function deleteUser(userId: string): Promise<{ detail: string }> {
   if (!token) throw new Error("No access token");
 
   const res = await axios.delete(
-    `https://inrep-scholar-backend.onrender.com/api/v1/users/${userId}`,
+    `${BACKEND_API_URL}/users/${userId}`,
     { headers: { Authorization: `Bearer ${token}` } }
   );
   return res.data;
@@ -166,7 +167,7 @@ export async function adminCreateUser(user: {
   if (!token) throw new Error("No access token");
 
   const res = await axios.post(
-    "https://inrep-scholar-backend.onrender.com/api/v1/users/admin-create",
+    `${BACKEND_API_URL}/users/admin-create`,
     user,
     { headers: { Authorization: `Bearer ${token}` } }
   );
@@ -185,7 +186,7 @@ export async function createUserProfile(userData: UserProfileCreate) {
   }
 
   const response = await axios.post(
-    "https://inrep-scholar-backend.onrender.com/api/v1/users/",
+    `${BACKEND_API_URL}/users/`,
     userData,
     {
       headers: {

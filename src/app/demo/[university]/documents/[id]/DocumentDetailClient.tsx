@@ -1,11 +1,29 @@
 "use client";
 
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
+import toast from "react-hot-toast";
 import { useUserStore } from "@/store/userStore";
 import { useGeneralStore } from "@/store/generalStore";
-import { useMockDocumentDetails } from "@/hooks/useMockDocumentDetails";
+import { useDocumentDetails } from "@/hooks/useDocumentDetails";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  buildDocumentViewerHref,
+} from "@/lib/documentViewer";
+import {
+  getDocumentAuthorLabel,
+  isExternalDocumentAuthor,
+} from "@/lib/documentAuthor";
 
 // Helper function to get access badge
 function getAccessBadge(accessRights: string) {
@@ -51,6 +69,7 @@ function canViewFullText(accessRights: string, userRole?: string) {
 
 export default function DocumentDetailClient() {
   const params = useParams();
+  const router = useRouter();
   const documentId = params.id as string;
   const userRole = useUserStore((state) => state?.role || undefined);
   const uniName = useGeneralStore((state) => state.affiliatedUni);
@@ -59,85 +78,45 @@ export default function DocumentDetailClient() {
     data: document,
     isLoading,
     error,
-  } = useMockDocumentDetails(documentId);
+  } = useDocumentDetails(documentId);
 
-  // Fallback dummy document for development
-  const dummyDocument = {
-    document: {
-      document_id: documentId,
-      tenant_id: "tenant-1",
-      author: "Marie Uwimana",
-      faculty_id: "661e9315-9307-410d-84d8-62612b41d381",
-      department_id: "dept-1",
-      title:
-        "Machine Learning Applications in Agricultural Yield Prediction for Rwanda",
-      file_url: "/documents/1.pdf",
-      status: "published",
-      abstract:
-        "This research explores machine learning applications in agricultural yield prediction for Rwanda's farming sector. The study investigates various algorithms including Random Forest, Support Vector Machines, and Neural Networks to predict crop yields based on environmental factors, soil conditions, and historical data. Results show significant improvements in prediction accuracy compared to traditional methods, with potential applications for food security and sustainable agriculture in the region.",
-      is_public: true,
-      is_read_only: false,
-      doi_link: "10.12345/ur.thesis.2024.001",
-      plagiarism_score: 8.2,
-      created_at: "2024-05-10T00:00:00Z",
-      updated_at: "2024-05-20T00:00:00Z",
-    },
-    faculty: {
-      faculty_id: "661e9315-9307-410d-84d8-62612b41d381",
-      name: "Computer Science",
-    },
-    department: { department_id: "dept-1", name: "Software Engineering" },
-    download_count: 245,
-    view_count: 1089,
-    comments: [
-      {
-        comment_id: "1",
-        document_id: documentId,
-        user_id: "john_doe",
-        content:
-          "This is a very well-researched paper with excellent methodology. The machine learning approach to agricultural yield prediction is innovative and has great potential for improving food security in Rwanda.",
-        created_at: "2024-05-15T10:30:00Z",
-      },
-      {
-        comment_id: "2",
-        document_id: documentId,
-        user_id: "sarah_smith",
-        content:
-          "I found the section on Random Forest algorithms particularly interesting. The comparison with traditional methods is well-documented. Great work!",
-        created_at: "2024-05-16T14:20:00Z",
-      },
-    ],
-    reviews: [
-      {
-        document_review_id: "1",
-        document_id: documentId,
-        reviewer_id: "dr_johnson",
-        status: "approved",
-        assigned_at: "2024-05-12T09:00:00Z",
-        due_date: "2024-05-25T17:00:00Z",
-        created_at: "2024-05-15T16:45:00Z",
-        updated_at: "2024-05-18T11:30:00Z",
-      },
-      {
-        document_review_id: "2",
-        document_id: documentId,
-        reviewer_id: "prof_williams",
-        status: "approved",
-        assigned_at: "2024-05-12T09:00:00Z",
-        due_date: "2024-05-25T17:00:00Z",
-        created_at: "2024-05-16T14:20:00Z",
-        updated_at: "2024-05-17T10:15:00Z",
-      },
-    ],
-  };
-
-  // Use dummy document if API fails or returns empty
-  const displayDocument = document || dummyDocument;
-  const isUsingDummyDocument = !document;
+  const [pdfBusy, setPdfBusy] = useState<"view" | "download" | null>(null);
+  const [agreementOpen, setAgreementOpen] = useState(false);
 
   if (isLoading) {
-    return null; // Suspense will handle loading
+    return (
+      <div className="min-h-screen bg-gray-50 p-8">
+        <div className="mx-auto max-w-4xl space-y-4">
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-48 w-full" />
+          <Skeleton className="h-32 w-full" />
+        </div>
+      </div>
+    );
   }
+
+  if (error || !document) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-8">
+        <div className="mx-auto max-w-lg rounded-lg border border-red-200 bg-red-50 p-6 text-red-800">
+          <h1 className="text-lg font-semibold">Could not load document</h1>
+          <p className="mt-2 text-sm">
+            {error instanceof Error ? error.message : "Request failed."} You may
+            need to sign in, or the document may not exist.
+          </p>
+          <Link
+            href={`/demo/${uniName?.subdomain || "alu"}/search`}
+            className="mt-4 inline-block text-blue-600 hover:underline"
+          >
+            Back to search
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const displayDocument = document;
+  const authorLabel = getDocumentAuthorLabel(displayDocument.document);
 
   // Helper function to safely format dates
   const formatDate = (dateString: string | null | undefined) => {
@@ -155,15 +134,7 @@ export default function DocumentDetailClient() {
       : "open_access"
     : "private";
 
-  // Log error but still show dummy document for development
-  if (error && !document) {
-    console.log("API Error, using dummy document:", error);
-  }
-
-  // Add development indicator if using dummy document
-  if (isUsingDummyDocument) {
-    console.log("🔧 Using dummy document for development");
-  }
+  const comments = displayDocument.comments ?? [];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -250,7 +221,12 @@ export default function DocumentDetailClient() {
 
                   <div className="space-y-2 text-gray-600">
                     <p>
-                      <strong>Author:</strong> {displayDocument.document.author}
+                      <strong>Author:</strong> {authorLabel}
+                      {isExternalDocumentAuthor(displayDocument.document) && (
+                        <span className="ml-2 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800">
+                          External
+                        </span>
+                      )}
                     </p>
                     <p>
                       <strong>Faculty:</strong>{" "}
@@ -269,12 +245,24 @@ export default function DocumentDetailClient() {
               <div className="flex flex-wrap gap-3">
                 {canViewFullText(accessRights, userRole) && (
                   <>
-                    <Button className="bg-blue-600 text-white px-6 py-3 hover:bg-blue-700 transition font-medium">
-                      📄 View PDF
+                    <Button
+                      type="button"
+                      disabled={pdfBusy !== null}
+                      className="bg-blue-600 px-6 py-3 font-medium text-white transition hover:bg-blue-700"
+                      onClick={() => setAgreementOpen(true)}
+                    >
+                      {pdfBusy === "view" ? "Opening…" : "📄 View PDF"}
                     </Button>
-                    <Button className="bg-green-600 text-white px-6 py-3 hover:bg-green-700 transition font-medium">
-                      ⬇️ Download PDF
-                    </Button>
+                    <span title="Can not download for now">
+                      <Button
+                        type="button"
+                        disabled
+                        aria-disabled="true"
+                        className="cursor-not-allowed bg-gray-300 px-6 py-3 font-medium text-gray-600 hover:bg-gray-300"
+                      >
+                        ⬇️ Download PDF
+                      </Button>
+                    </span>
                   </>
                 )}
               </div>
@@ -295,6 +283,61 @@ export default function DocumentDetailClient() {
                 </div>
               )}
             </div>
+            <Dialog open={agreementOpen} onOpenChange={setAgreementOpen}>
+              <DialogContent className="bg-white">
+                <DialogHeader>
+                  <DialogTitle>Academic Use Agreement</DialogTitle>
+                  <DialogDescription>
+                    This document is provided strictly for academic and
+                    research purposes. By continuing, you agree not to
+                    redistribute, republish, or use the content for
+                    commercial purposes without permission from the rights
+                    holder.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="text-sm text-gray-700">
+                  Respect copyright laws and cite the author properly when
+                  referencing this work.
+                </div>
+                <DialogFooter>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setAgreementOpen(false)}
+                    disabled={pdfBusy !== null}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={() => {
+                      setPdfBusy("view");
+                      try {
+                        const href = buildDocumentViewerHref({
+                          subdomain: uniName?.subdomain || "alu",
+                          documentId: displayDocument.document.document_id,
+                          title: displayDocument.document.title,
+                          fileUrl: displayDocument.document.file_url,
+                        });
+                        router.push(href);
+                        setAgreementOpen(false);
+                      } catch (e) {
+                        toast.error(
+                          e instanceof Error
+                            ? e.message
+                            : "Could not open PDF"
+                        );
+                      } finally {
+                        setPdfBusy(null);
+                      }
+                    }}
+                    disabled={pdfBusy !== null}
+                  >
+                    I Agree, Continue
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
 
             {/* Abstract Section */}
             <div className="bg-white rounded-lg shadow border p-6 mt-6">
@@ -307,45 +350,32 @@ export default function DocumentDetailClient() {
               </p>
             </div>
 
-            {/* Keywords Section */}
+            {/* Keywords — not returned by API schema; section reserved */}
             <div className="bg-white rounded-lg shadow border p-6 mt-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">
                 Keywords
               </h2>
-              <div className="flex flex-wrap gap-2">
-                <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
-                  Machine Learning
-                </span>
-                <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
-                  Agriculture
-                </span>
-                <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
-                  Yield Prediction
-                </span>
-                <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
-                  Rwanda
-                </span>
-                <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
-                  Food Security
-                </span>
-              </div>
+              <p className="text-gray-500 text-sm">
+                No keywords are available for this document from the repository
+                API.
+              </p>
             </div>
 
             {/* Comments Section */}
             <div className="bg-white rounded-lg shadow border p-6 mt-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                Comments ({displayDocument.comments.length})
+                Comments ({comments.length})
               </h2>
-              {displayDocument.comments.length > 0 ? (
+              {comments.length > 0 ? (
                 <div className="space-y-4">
-                  {displayDocument.comments.map((comment) => (
+                  {comments.map((comment) => (
                     <div
                       key={comment.comment_id}
                       className="border-b border-gray-200 pb-4 last:border-b-0"
                     >
                       <div className="flex items-start space-x-3">
                         <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center text-sm font-medium">
-                          {comment.user_id.charAt(0).toUpperCase()}
+                          {(comment.user_id || "?").charAt(0).toUpperCase()}
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center space-x-2 mb-1">
@@ -461,7 +491,7 @@ export default function DocumentDetailClient() {
                       </span>
                     </div>
                   )}
-                {displayDocument.document.plagiarism_score && (
+                {displayDocument.document.plagiarism_score != null && (
                   <div>
                     <span className="font-medium text-gray-700">
                       Plagiarism Score:
@@ -474,43 +504,19 @@ export default function DocumentDetailClient() {
               </div>
             </div>
 
-            {/* Related Documents */}
             <div className="bg-white rounded-lg shadow border p-6 mt-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                Related Documents
+                More documents
               </h3>
-              <div className="space-y-3">
-                <div className="border-b border-gray-200 pb-3 last:border-b-0">
-                  <h4 className="font-medium text-gray-900 text-sm mb-1">
-                    <Link href="#" className="hover:text-blue-600">
-                      Deep Learning Frameworks for Natural Language Processing
-                    </Link>
-                  </h4>
-                  <p className="text-xs text-gray-600">
-                    by Dr. Jean Mukiza • Computer Science
-                  </p>
-                </div>
-                <div className="border-b border-gray-200 pb-3 last:border-b-0">
-                  <h4 className="font-medium text-gray-900 text-sm mb-1">
-                    <Link href="#" className="hover:text-blue-600">
-                      Sustainable Agriculture Practices in East Africa
-                    </Link>
-                  </h4>
-                  <p className="text-xs text-gray-600">
-                    by Sarah Niyonsaba • BEL
-                  </p>
-                </div>
-                <div className="border-b border-gray-200 pb-3 last:border-b-0">
-                  <h4 className="font-medium text-gray-900 text-sm mb-1">
-                    <Link href="#" className="hover:text-blue-600">
-                      Data Analytics in Educational Technology
-                    </Link>
-                  </h4>
-                  <p className="text-xs text-gray-600">
-                    by Emmanuel Kwizera • Computer Science
-                  </p>
-                </div>
-              </div>
+              <p className="text-sm text-gray-600 mb-3">
+                Browse the repository for other works from this institution.
+              </p>
+              <Link
+                href={`/demo/${uniName?.subdomain || "alu"}/search`}
+                className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+              >
+                Go to search →
+              </Link>
             </div>
 
             {/* Citation Information */}
@@ -520,9 +526,12 @@ export default function DocumentDetailClient() {
               </h3>
               <div className="bg-gray-50 p-3 rounded border text-sm">
                 <p className="text-gray-700">
-                  Uwimana, M. (2024). Machine Learning Applications in
-                  Agricultural Yield Prediction for Rwanda. African Leadership
-                  University Repository.
+                  {authorLabel} (
+                  {new Date(
+                    displayDocument.document.created_at
+                  ).getFullYear()}
+                  ). {displayDocument.document.title}.{" "}
+                  {uniName?.universityName || "Institutional repository"}.
                 </p>
                 {displayDocument.document.doi_link && (
                   <p className="text-blue-600 mt-2">

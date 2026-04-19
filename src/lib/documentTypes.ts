@@ -53,6 +53,7 @@ export interface DocumentRead {
   faculty_id: string;
   department_id: string;
   title: string;
+  type?: string;
   file_url: string;
   pdf_preview_url?: string | null;
   file_mime_type?: string | null;

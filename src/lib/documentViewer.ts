@@ -7,25 +7,14 @@ import {
   resolveDocumentFileUrl,
 } from "@/lib/documentFileUrl";
 
-export const TEMP_PDF_VIEWER_URL =
-  "https://rhihqqjfnqrqylkdarri.supabase.co/storage/v1/object/sign/documents/documents/c1ce94cc-a555-4a92-9848-ac25eb06ee5e/5e4553c0-6916-4c3b-aff5-65a7ad25f5bc/admin-qa-guide.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8yNjRlNzYwMS05MjA5LTRmNTAtOGFmZS02OWEwZWY5ZjU4Y2UiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJkb2N1bWVudHMvZG9jdW1lbnRzL2MxY2U5NGNjLWE1NTUtNGE5Mi05ODQ4LWFjMjVlYjA2ZWU1ZS81ZTQ1NTNjMC02OTE2LTRjM2ItYWZmNS02NWE3YWQyNWY1YmMvYWRtaW4tcWEtZ3VpZGUucGRmIiwiaWF0IjoxNzc1NzU0MDI0LCJleHAiOjE3NzYzNTg4MjR9.LPeoSUqPjTW8_rj0Q-suDce-C5pC21J9JRk73fzBtTo";
-
 export function buildDocumentViewerHref({
   subdomain,
   documentId,
-  title,
-  fileUrl,
 }: {
   subdomain: string;
   documentId: string;
-  title?: string;
-  fileUrl?: string | null;
 }): string {
-  const params = new URLSearchParams();
-  params.set("documentId", documentId);
-  if (title) params.set("title", title);
-  if (fileUrl) params.set("fileUrl", fileUrl);
-  return `/demo/${subdomain}/documents/${documentId}/viewer?${params.toString()}`;
+  return `/demo/${subdomain}/documents/${documentId}/viewer`;
 }
 
 function suggestedFilename(title: string | undefined): string {
@@ -72,7 +61,6 @@ export async function openDocumentPdf(
 
   const tryUrls: string[] = [];
   if (resolved) tryUrls.push(resolved);
-  tryUrls.push(`${BACKEND_API_URL}/document/${documentId}/file`);
   tryUrls.push(`${BACKEND_API_URL}/document/${documentId}/download`);
 
   for (const url of tryUrls) {
@@ -123,7 +111,6 @@ export async function downloadDocumentPdf(
 
   const tryUrls: string[] = [];
   if (resolved) tryUrls.push(resolved);
-  tryUrls.push(`${BACKEND_API_URL}/document/${documentId}/file`);
   tryUrls.push(`${BACKEND_API_URL}/document/${documentId}/download`);
 
   for (const url of tryUrls) {

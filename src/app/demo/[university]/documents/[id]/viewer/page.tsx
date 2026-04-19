@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
-import PdfViewerClient from "./PdfViewerClient";
+import PdfViewerWrapper from "./PdfViewerWrapper";
 
 export default function DocumentPdfViewerPage() {
-  return <PdfViewerClient />;
+  return <PdfViewerWrapper />;
 }

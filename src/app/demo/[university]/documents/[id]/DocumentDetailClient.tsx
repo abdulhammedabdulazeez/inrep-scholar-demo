@@ -316,8 +316,6 @@ export default function DocumentDetailClient() {
                         const href = buildDocumentViewerHref({
                           subdomain: uniName?.subdomain || "alu",
                           documentId: displayDocument.document.document_id,
-                          title: displayDocument.document.title,
-                          fileUrl: displayDocument.document.file_url,
                         });
                         router.push(href);
                         setAgreementOpen(false);
